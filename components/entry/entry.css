@@ -1,0 +1,61 @@
+/* Outer shell and controls adapt the source portfolio's spare monochrome UI. */
+.entry-shell { position: absolute; inset: 0; z-index: 100; min-height: 360px; background: #000; overflow-y: auto; color: #fff; font-family: var(--font-mono); }
+.entry-center { min-height: 100%; display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 90px 24px; }
+.entry-dialog { width: max-content; max-width: 100%; padding: 24px; border: 6px solid #fff; background: #000; }
+.entry-dialog h1, .entry-dialog p { margin: 0; font: 400 16px/1.45 var(--font-mono); }
+.entry-dialog p + p { margin-top: 14px; }
+.entry-status { display: flex; align-items: baseline; gap: 10px; }
+.entry-start { display: block; margin: 18px auto 0; padding: 8px 10px; min-height: 44px; border: 3px solid #fff; background: #000; color: #fff; font: 400 16px var(--font-mono); }
+.entry-start:hover:not(:disabled) { color: #000; background: #fff; }
+.entry-start:focus-visible { outline: 2px solid #fff; outline-offset: 6px; }
+.entry-start:disabled { opacity: .45; }
+.entry-skip { margin-top: 22px; padding: 9px 4px; color: #aaa; background: none; font: 12px var(--font-mono); }
+.entry-skip:hover { color: #fff; }
+.entry-footer { position: absolute; left: 40px; right: 40px; bottom: 28px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+.entry-footer button { display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 36px; padding: 8px 0; background: none; color: #b7b7b7; font: 12px var(--font-mono); }
+.entry-footer button:hover { color: #fff; }
+.entry-preferences { display: flex; align-items: center; gap: 24px; }
+.entry-footer .entry-sound { width: 36px; }
+.entry-switch { width: 25px; height: 14px; border: 1px solid #888; display: inline-block; position: relative; }
+.entry-switch::after { content: ""; position: absolute; width: 7px; height: 8px; left: 2px; top: 2px; background: #888; }
+.entry-switch.is-on::after { left: 14px; background: #fff; }
+.entry-icon-button { width: 36px; height: 36px; display: grid; place-items: center; color: #ddd; background: #ffffff0a; border-radius: 4px; }
+.computer-info { position: absolute; z-index: 20; top: 64px; left: 64px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px; color: #fff; font-family: var(--font-mono); animation: computer-info-enter 350ms ease both; }
+.computer-info h1, .computer-info p, .computer-info time { padding: 5px 16px; background: #000; margin: 0; font: 400 16px/1.35 var(--font-mono); }
+.computer-info-row { display: flex; gap: 4px; }
+.computer-info-row button { display: grid; place-items: center; width: 34px; background: #000; color: white; }
+.computer-info-row button:hover { background: #303030; }
+.computer-info-row button[aria-pressed=true] { background: white; color: black; }
+.computer-navigation { position: absolute; bottom: 56px; left: 50%; transform: translateX(-50%); z-index: 20; display: flex; justify-content: center; gap: 6px; max-width: calc(100% - 32px); font: 14px var(--font-mono); }
+.computer-navigation button, .computer-instruction { padding: 8px 14px; display: flex; align-items: center; justify-content: center; gap: 10px; background: #000; color: #fff; min-height: 36px; white-space: nowrap; }
+.computer-navigation button:hover { background: #fff; color: #000; }
+.computer-navigation button:disabled { color: #999; background: #111; cursor: default; }
+.computer-navigation .computer-prompt { font-size: 16px; }
+[data-computer-view="monitor"] .computer-navigation { bottom: 16px; }
+.computer-instruction { font-size: 12px; }
+.computer-cursor { display: inline-block; width: .7em; height: .12em; margin-left: 3px; background: currentColor; }
+@keyframes computer-info-enter { from { opacity: 0; transform: translateX(-15px); } to { opacity: 1; transform: none; } }
+@media (max-width: 700px) {
+  .entry-dialog { padding: 20px 17px; border-width: 4px; }.entry-dialog h1, .entry-dialog p { font-size: 13px; }.entry-start { font-size: 14px; }
+  .entry-footer { left: 18px; right: 18px; bottom: 18px; gap: 12px; }.entry-footer button { font-size: 10px; gap: 6px; }.entry-preferences { gap: 12px; }
+  .computer-info { left: 20px; top: 24px; }.computer-info h1, .computer-info p, .computer-info time { font-size: 12px; padding: 5px 10px; }
+  .computer-navigation { bottom: 28px; flex-wrap: wrap; width: max-content; }.computer-navigation button { font-size: 12px; }.computer-navigation .computer-prompt { font-size: 13px; }.computer-instruction { width: 100%; font-size: 10px; }
+}
+.entry-modal-backdrop { position: fixed; inset: 0; z-index: 100; display: grid; place-items: center; padding: 24px; background: #03050ab3; backdrop-filter: blur(12px); }
+.entry-info-dialog { background: #1a202b; border: 1px solid #ffffff18; border-radius: 15px; padding: 34px; max-width: 520px; max-height: 85dvh; overflow-y: auto; position: relative; box-shadow: 0 20px 60px #0008; }
+.entry-info-close { position: absolute; top: 14px; right: 14px; }
+.entry-info-dialog > .wave-mark { color: #98b8e8; width: 36px; height: 36px; }
+.entry-info-dialog h2 { font-size: 27px; font-weight: 400; margin: 20px 0 12px; }
+.entry-info-dialog h3 { font-size: 13px; font-weight: 500; margin-top: 24px; }
+.entry-info-dialog p { font-size: 13px; line-height: 1.7; color: #acb8cd; }
+.entry-info-dialog a { color: #c3d6f8; text-underline-offset: 3px; }
+.entry-info-dialog .entry-info-small { margin-top: 23px; font-size: 10px; }
+.entry-info-keys { display: flex; flex-direction: column; gap: 9px; font-size: 12px; color: #d7dfed; padding: 18px 0; margin-top: 12px; border-block: 1px solid #ffffff0e; }
+kbd { font-family: var(--font-mono); font-size: .8em; border: 1px solid #ffffff2a; border-radius: 4px; padding: 2px 5px; color: #b8c6dc; }
+.boot-screen { height: 100%; background: #0a0f1c; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+.boot-screen > .wave-mark { width: 68px; height: 68px; color: #a9c9ff; margin-bottom: 24px; }
+.boot-brand { font-size: 34px; letter-spacing: -1px; font-weight: 500; }.boot-brand > span { font-weight: 200; }
+.boot-progress { width: 140px; height: 2px; margin-top: 45px; background: #ffffff16; }
+.boot-progress > span { display: block; height: 100%; background: #a9c9ff; transition: width .32s ease; }
+.boot-screen p { font: 10px var(--font-mono); color: #8f9db5; margin-top: 16px; }
+.boot-screen small { position: absolute; bottom: 36px; font: 9px var(--font-mono); letter-spacing: .18em; color: #6d7c98; }

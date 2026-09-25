@@ -1,0 +1,6 @@
+.desktop-session { position: relative; width: 100%; height: 100dvh; overflow: hidden; isolation: isolate; }
+.desktop-session[data-active="false"] { pointer-events: none; }
+.desktop-session[data-powered="false"] { background: #000; }
+.desktop-session[data-powered="false"] > * { visibility: hidden; }
+.desktop-session .desktop-status { max-height: calc(100dvh - 66px); overflow-y: auto; }
+.desktop-session .desktop-quick-grid button.is-on small { color: #fff; opacity: 1; }

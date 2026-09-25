@@ -1,0 +1,37 @@
+.world-scene {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  isolation: isolate;
+  background: #adadb5;
+}
+
+/* CSS3D sits behind the WebGL scene; the monitor's depth-writing transparent
+   plane cuts a real window through the baked model to the live desktop. */
+.world-screen-layer { position: absolute; inset: 0; z-index: 1; overflow: hidden; pointer-events: none; }
+.world-screen-renderer { position: absolute; inset: 0; pointer-events: none; }
+.world-screen-object { background: #142437; backface-visibility: hidden; pointer-events: none; }
+.world-desktop-frame { display: block; border: 0; background: #142437; }
+.world-screen-layer.is-interactive .world-screen-object { pointer-events: auto; }
+.world-canvas { position: absolute; inset: 0; z-index: 2; }
+.world-canvas > div { height: 100% !important; }
+.world-canvas.is-monitor, .world-canvas.is-monitor * { pointer-events: none !important; }
+.world-canvas.is-expanded { visibility: hidden; pointer-events: none; }
+.world-film-grain { position: absolute; inset: 0; z-index: 3; pointer-events: none; background-repeat: repeat; background-size: 128px 128px; opacity: 0.12; mix-blend-mode: soft-light; }
+.world-film-grain[hidden] { display: none; }
+
+/* Keep the iframe and every parent mounted. Expansion changes the actual
+   browsing viewport instead of moving or visually scaling a 1280px document. */
+.world-screen-layer.is-expanded { z-index: 4; pointer-events: auto; }
+.world-screen-layer.is-expanded .world-screen-renderer,
+.world-screen-layer.is-expanded .world-screen-view,
+.world-screen-layer.is-expanded .world-screen-camera,
+.world-screen-layer.is-expanded .world-screen-object {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: none !important;
+  perspective: none !important;
+}
+.world-screen-layer.is-expanded .world-desktop-frame { width: 100% !important; height: 100% !important; }

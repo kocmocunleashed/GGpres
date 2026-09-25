@@ -23,6 +23,9 @@ All models, wallpapers, fonts, and synthesized sounds are served locally. No ext
 - Click **START** for the distant workstation reveal, then click anywhere to approach the desk.
 - Move onto the display or choose **Use the computer** to enter the live GNOME-style screen. Move away to step back.
 - Use **Free camera** to orbit the workstation; drag to look around and scroll to zoom.
+- Choose **Explore the desk** to pick up the mug, read the note, swivel the chair, or press the PC power button. The objects themselves are clickable; matching controls support keyboard and touch.
+- With the mug held, click the plant, PC, or desk (or select its name), then hold **Pour** or `P`. Releasing stops the stream. Coffee is finite; **Clean up / refill** clears spills and refills the mug.
+- Coffee on the PC cuts its simulated power until cleanup. The desktop becomes inactive and dark, while its apps remain mounted. This is a playful simulation, not real hardware failure behavior.
 - **Expand desktop** gives the desktop the whole browser. Quick Settings offers **Return to monitor** and **Back to desk**. Windows, terminal history, and file navigation survive these view changes.
 - Open **Operating Systems** from the desktop or dock, then **Begin the journey**.
 - `→` / `Space`: next scene; `←`: previous scene; `Esc`: desktop.
@@ -58,6 +61,7 @@ CPU percentages and memory measurements are illustrative simulation data, not re
 - `components/apps/`: Lesson, Files, Terminal, System Monitor, Settings, About, and Software.
 - `components/lesson/`: persistent world, reusable scene renderer, interactive diagrams, and controls.
 - `store/system.ts`: windows, processes, allocations, settings, notifications, and lesson progress.
+- `store/room.ts`: mug contents, pour targets, spills, chair rotation, note, and simulated power. Pouring uses a bounded clock and lightweight procedural geometry, without a physics engine.
 - `lib/filesystem.ts`, `lib/terminal.ts`: isolated virtual filesystem and educational command interpreter.
 - `lib/lesson-data.ts`: scene content and chapter/source metadata.
 
@@ -76,7 +80,7 @@ bunx tsc --noEmit
 bun run build
 ```
 
-Integration tests cover the shared lifecycle across windows, processes, memory, terminal commands, virtual path handling, protected processes, and session resets. Browser checks should cover workstation entry, the Files→Terminal kill demonstration, minimize/restore, all chapter transitions, a demo return/resume, mobile layout, and reduced motion.
+Integration tests cover the shared lifecycle across windows, processes, memory, terminal commands, virtual path handling, protected processes, session resets, finite liquid transfer, interrupted pouring, and wet-PC recovery. Browser checks should cover workstation entry, room interactions and spill recovery, the Files→Terminal kill demonstration, minimize/restore, all chapter transitions, a demo return/resume, mobile layout, and reduced motion.
 
 ## Lesson provenance and credits
 
