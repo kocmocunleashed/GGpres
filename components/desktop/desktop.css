@@ -23,6 +23,7 @@
 .icon-files { background: linear-gradient(#81b7f3 5%, #5d9cdb 50%, #488bd4); color: #dcedff; }
 .icon-files > svg { fill: #d1e9ff; stroke: #c8e1ff; }
 .icon-terminal { background: linear-gradient(140deg, #444852, #262932); border: 1px solid #ffffff25; color: #e9eef6; }
+.icon-runner { background: linear-gradient(145deg, #d0e5ab, #85ad68); color: #30462a; }
 .icon-system-monitor { background: linear-gradient(145deg, #62bca2, #318b70); color: #eafff4; }
 .icon-settings { background: linear-gradient(145deg, #d8dce4, #aab5c7); color: #4c5f7f; }
 .icon-about { background: linear-gradient(145deg, #7b95c7, #546d9c); }
@@ -112,3 +113,12 @@
 .desktop-welcome-close { position: absolute; right: 7px; top: 7px; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; color: #bec5d2; background: none; }
 .desktop-welcome-close:hover { background: #ffffff12; color: white; }
 @media (max-width: 600px) { .desktop-welcome { top: 60px; padding: 19px 16px; gap: 12px; }.desktop-window-titlebar { grid-template-columns: minmax(26px, 1fr) minmax(0, auto) minmax(82px, 1fr); } }
+
+/* Keep every launcher usable when the complete app collection outgrows a phone. */
+@media (max-width: 600px) {
+  .desktop-dock { max-width: calc(100% - 16px); gap: 0; overflow-x: auto; overflow-y: hidden; scrollbar-width: none; scroll-padding-inline: 6px; }
+  .desktop-dock::-webkit-scrollbar { display: none; }
+  .desktop-dock-item { flex: 0 0 44px; min-width: 44px; min-height: 44px; }
+  .desktop-dock-divider { flex: 0 0 1px; margin-inline: 2px; }
+  .desktop-dock-tooltip { display: none; }
+}

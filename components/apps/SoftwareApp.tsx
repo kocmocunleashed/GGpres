@@ -10,6 +10,7 @@ const collection: { id: AppId; description: string }[] = [
   { id: "files", description: "Explore a small filesystem. Big ideas, neatly organized." },
   { id: "terminal", description: "A command line for the curious. Type help to begin." },
   { id: "system-monitor", description: "Meet your processes. Watch your resources. Connect the dots." },
+  { id: "runner", description: "The open-source Chromium dinosaur runner. A quick break between discoveries." },
 ];
 
 export function SoftwareApp() {

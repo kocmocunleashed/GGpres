@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import DesktopSession from "@/components/desktop/DesktopSession";
 
 export const metadata: Metadata = {
-  title: "WaveOS Desktop",
-  description: "The interactive WaveOS classroom desktop.",
+  title: "opitlcalOS Desktop",
+  description: "The interactive opitlcalOS classroom desktop.",
 };
 
 export default function DesktopPage() {

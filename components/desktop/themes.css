@@ -1,0 +1,191 @@
+/* Desktop-only tokens: the fullscreen lesson remains its own visual world. */
+.desktop-shell {
+  --os-surface: #202127;
+  --os-raised: #2a2c34;
+  --os-text: #eef0f6;
+  --os-muted: #aab2c3;
+  --os-line: #ffffff1c;
+  --os-accent: #a6b6ff;
+  --os-selected: #758bbf28;
+}
+.desktop-shell[data-theme="monochrome"] {
+  color-scheme: dark;
+  --os-surface: #202020;
+  --os-raised: #2b2b2b;
+  --os-panel: #242424f5;
+  --os-header: #323232;
+  --os-topbar: #151515f5;
+  --os-text: #f3f3f3;
+  --os-muted: #bcbcbc;
+  --os-line: #ffffff26;
+  --os-accent: #f3f3f3;
+  --os-accent-fill: #dddddd;
+  --os-accent-ink: #171717;
+  --os-selected: #ffffff17;
+  --os-hover: #ffffff12;
+  --os-track: #ffffff16;
+  --os-shadow: #00000055;
+  --os-terminal: #151515;
+  --os-radius: 10px;
+  --os-small-radius: 6px;
+  color: var(--os-text);
+  background: #171717;
+}
+.desktop-shell[data-theme="pink"] {
+  color-scheme: light;
+  --os-surface: #fff8fb;
+  --os-raised: #f9eaf2;
+  --os-panel: #fff5faf7;
+  --os-header: #f7e4ee;
+  --os-topbar: #fff1f8ed;
+  --os-text: #49263a;
+  --os-muted: #805568;
+  --os-line: #70314e26;
+  --os-accent: #a32d65;
+  --os-accent-fill: #a82b65;
+  --os-accent-ink: #fff7fb;
+  --os-selected: #c9538920;
+  --os-hover: #bc3d7610;
+  --os-track: #88476320;
+  --os-shadow: #79395723;
+  --os-terminal: #fff8fb;
+  --os-radius: 22px;
+  --os-small-radius: 12px;
+  color: var(--os-text);
+  background: #edb4ce;
+}
+
+/* Original, asset-free wallpapers. These stay still even on low-power devices. */
+.desktop-shell[data-theme="monochrome"] .desktop-wallpaper { background: #171717; }
+.desktop-shell[data-theme="monochrome"] .desktop-wallpaper > svg { filter: grayscale(1); opacity: .75; }
+.desktop-shell[data-theme="monochrome"] .desktop-wallpaper::after { background: linear-gradient(110deg, #0005, transparent 65%); }
+.desktop-shell[data-theme="monochrome"] .desktop-wallpaper-wordmark { color: #eee; opacity: .48; }
+.desktop-shell[data-theme="pink"] .desktop-wallpaper { background: radial-gradient(ellipse at 23% 20%, #ffedf4, transparent 66%), linear-gradient(145deg, #fbd8e9, #e8a5c7); }
+.desktop-shell[data-theme="pink"] .desktop-wallpaper > svg { display: none; }
+.desktop-shell[data-theme="pink"] .desktop-wallpaper::before,
+.desktop-shell[data-theme="pink"] .desktop-wallpaper::after { content: ""; position: absolute; aspect-ratio: 1; border-radius: 50%; border: 1px solid #fff9; }
+.desktop-shell[data-theme="pink"] .desktop-wallpaper::before { width: min(70vw, 1020px); right: -10%; bottom: -46%; background: radial-gradient(circle at 31% 22%, #fff3f9ee, #f1b9d69c 45%, #da82b48c 71%, #f8d3e7); box-shadow: inset 4px 5px 45px #fff9, inset -10px -15px 65px #b5468514, 0 25px 90px #a23e7515; }
+.desktop-shell[data-theme="pink"] .desktop-wallpaper::after { width: min(33vw, 480px); left: 14%; top: 21%; inset: 21% auto auto 14%; background: radial-gradient(circle at 29% 22%, #fff9fcf5, #fbd8e7a6 37%, #eda8ca6b 73%, #ffecf5); box-shadow: inset 3px 4px 30px #fff9, 10px 20px 55px #a94c7312; }
+.desktop-shell[data-theme="pink"] .desktop-wallpaper-wordmark { color: #86365d; opacity: .6; font-weight: 500; }
+.desktop-shell[data-theme="pink"] .desktop-shortcuts > button { text-shadow: none; }
+.desktop-shell[data-theme="pink"] .desktop-window { box-shadow: 0 18px 60px var(--os-shadow), 0 2px 10px #6d254415; }
+.desktop-shell[data-theme="pink"] .desktop-window.is-focused { box-shadow: 0 24px 90px #79395736, 0 2px 10px #6d254419; }
+.desktop-shell[data-theme="pink"] .desktop-app-icon { background: linear-gradient(145deg, #fff0f8, #e6a7c9); color: #8b2d5a; border-radius: 32%; box-shadow: 0 3px 6px #9b4c7025, 0 1px 0 #ffff inset, 0 -2px 0 #b6547a20 inset; }
+.desktop-shell[data-theme="pink"] .icon-files > svg { fill: #ba548d; stroke: #8b2d5a; }
+.desktop-shell[data-theme="pink"] .icon-terminal { background: linear-gradient(145deg, #75495f, #542b43); color: #fff0f8; border-color: #ffffff45; }
+.desktop-shell[data-theme="pink"] .icon-lesson { background: linear-gradient(145deg, #d05d96, #a02d69); color: #fff4f9; }
+.desktop-shell[data-theme="pink"] .desktop-dock { border-radius: 27px; }
+.desktop-shell[data-theme="pink"] .desktop-dock-item { border-radius: 17px; }
+.desktop-shell[data-theme="pink"] .desktop-window.is-maximized { border-radius: 12px; }
+.desktop-shell[data-theme="monochrome"] .desktop-app-icon { filter: grayscale(1); }
+
+/* One set of semantic surface rules gives both themes complete app coverage. */
+.desktop-shell:is([data-theme="monochrome"], [data-theme="pink"]) {
+  & :focus-visible { outline-color: var(--os-accent); }
+  & ::selection { background: var(--os-accent-fill); color: var(--os-accent-ink); }
+  & ::-webkit-scrollbar-thumb { background: var(--os-track); }
+  & .desktop-topbar { background: var(--os-topbar); color: var(--os-text); box-shadow: 0 1px 0 var(--os-line); }
+  & .desktop-clock > i { background: var(--os-accent); }
+  & .desktop-dock { background: var(--os-panel); border-color: var(--os-line); box-shadow: 0 10px 40px var(--os-shadow); }
+  & .desktop-dock-divider { background: var(--os-line); }
+  & .desktop-dock-indicator { background: var(--os-accent); }
+  & .desktop-dock-launcher, & .desktop-window-title, & .desktop-window-controls button, & .desktop-calendar-grid > span, & .desktop-search input { color: var(--os-text); }
+  & .desktop-window { background: var(--os-surface); border-color: var(--os-line); border-radius: var(--os-radius); }
+  & .desktop-window.is-focused { border-color: color-mix(in srgb, var(--os-accent), transparent 67%); }
+  & .desktop-window-titlebar { background: var(--os-header); border-color: var(--os-line); }
+  & :is(.desktop-popover, .desktop-notification, .desktop-welcome, .desktop-dock-tooltip, .desktop-overview-preview) { background: var(--os-panel); border-color: var(--os-line); color: var(--os-text); border-radius: var(--os-radius); box-shadow: 0 12px 36px var(--os-shadow); }
+  & :is(.desktop-popover-heading > span:last-child, .desktop-network-info small, .desktop-notification p, .desktop-notification > button, .desktop-welcome p, .desktop-welcome-close, .desktop-calendar-grid > .day-name, .desktop-notification-list p, .desktop-app-loading, .desktop-edition, .desktop-activities-header > span, .desktop-preview-status, .desktop-application-grid > button > span:last-child, .desktop-activities-hint, .desktop-search-empty, .desktop-search, .desktop-search input::placeholder) { color: var(--os-muted); }
+  & :is(.desktop-topbar button:hover, .desktop-topbar button.is-active, .desktop-dock-item:hover, .desktop-dock-item.is-focused, .desktop-shortcuts > button:hover, .desktop-window-controls button:hover, .desktop-welcome-close:hover, .desktop-status-actions > button:hover, .desktop-application-grid > button:hover) { background: var(--os-hover); }
+  & :is(.desktop-window-close, .desktop-quick-grid > button, .desktop-popover-heading button, .desktop-notification-heading button, .desktop-notification-list > div, .desktop-activities-header > button, .desktop-preview-bar) { background: var(--os-hover); }
+  & :is(.desktop-quick-grid > button.is-on, .desktop-calendar-grid > .is-today, .desktop-welcome-start) { background: var(--os-accent-fill); color: var(--os-accent-ink); }
+  & .desktop-welcome-start { border-radius: var(--os-small-radius); }
+  & .desktop-welcome-start:hover { filter: brightness(1.08); }
+  & .desktop-window-controls button.desktop-window-close:hover { background: #ae3450; color: #fff; }
+  & :is(.desktop-status-actions, .desktop-notification-heading) { border-color: var(--os-line); }
+  & .desktop-resume { background: var(--os-panel); color: var(--os-text); border-color: var(--os-line); border-radius: var(--os-small-radius); }
+  & .desktop-resume:hover { background: var(--os-raised); }
+  & .desktop-activities { background: var(--os-panel); }
+  & .desktop-search { background: var(--os-hover); border-color: var(--os-line); border-radius: var(--os-small-radius); }
+  & .desktop-search:focus-within { border-color: var(--os-accent); box-shadow: none; }
+  & .desktop-search kbd { border-color: var(--os-line); }
+  & .desktop-overview-preview:hover { border-color: var(--os-accent); }
+  & .desktop-preview-bar > span:first-child { background: var(--os-accent); }
+  & .desktop-activities-hint kbd, & .desktop-notification > .wave-mark { color: var(--os-accent); }
+  & .desktop-shortcut-arrow { color: var(--os-accent-ink); background: var(--os-accent-fill); }
+
+  & :is(.app-files, .app-terminal, .app-monitor, .app-settings, .app-about, .app-software) { color: var(--os-text); background: var(--os-surface); }
+  & :is(.app-icon-button, .app-sidebar-item, .app-breadcrumbs button, .app-file-item, .app-file-preview-title, .app-file-preview pre, .app-empty-state h3, .app-monitor-stat-label, .app-monitor-table td:first-child, .app-settings-section h3, .app-wallpaper-option, .app-about-motto, .app-about-specs dd, .app-software-search input, .app-software-feature p) { color: var(--os-text); }
+  & :is(.app-sidebar-caption, .app-storage-info, .app-storage-info small, .app-breadcrumbs svg, .app-statusbar, .app-empty-state, .app-monitor-stat-label svg, .app-monitor-stat strong span, .app-monitor-stat small, .app-monitor-list-heading span, .app-monitor-table th, .app-monitor-table td, .app-monitor-footer p, .app-simulation-tag, .app-content-heading p, .app-setting-icon, .app-setting-row p, .app-settings-note, .app-settings-brand, .app-about-version, .app-about-specs dt, .app-about-disclaimer, .app-about-easter-egg, .app-software-search, .app-software-search input::placeholder, .app-software-heading > span, .app-software-item p, .app-software-note) { color: var(--os-muted); }
+  & :is(.app-sidebar, .app-files-toolbar, .app-monitor-table th) { background: var(--os-raised); }
+  & :is(.app-sidebar, .app-files-toolbar, .app-statusbar, .app-file-preview-title, .app-monitor-summary, .app-monitor-process-count, .app-monitor-table th, .app-monitor-table td, .app-monitor-footer, .app-settings-group, .app-setting-row + .app-setting-row, .app-about-specs, .app-software-search, .app-software-feature, .app-software-item, .app-button) { border-color: var(--os-line); }
+  & :is(.app-icon-button:hover:not(:disabled), .app-sidebar-item:hover, .app-file-item:hover, .app-monitor-table tr:hover td, .app-button:hover) { background: var(--os-hover); }
+  & :is(.app-sidebar-item.is-active, .app-monitor-table tr.is-selected td, .app-monitor-table tr.is-selected:hover td) { color: var(--os-text); background: var(--os-selected); }
+  & .app-breadcrumbs span:last-child button { color: var(--os-text); }
+  & .app-file-item:hover { border-color: var(--os-line); }
+  & .app-folder-icon { color: var(--os-accent); stroke: var(--os-accent); }
+  & .app-document-icon { color: var(--os-muted); }
+  & .app-statusbar { background: var(--os-hover); }
+  & .app-terminal { background: var(--os-terminal); }
+  & :is(.app-terminal-welcome, .app-terminal-welcome button, .app-terminal-user, .app-terminal-path) { color: var(--os-accent); }
+  & .app-terminal-dim { color: var(--os-muted); }
+  & :is(.app-terminal-prompt, .app-terminal-entry pre, .app-terminal-input-row input) { color: var(--os-text); caret-color: var(--os-accent); }
+  & .app-terminal-input-row:focus-within { box-shadow: 0 1px 0 var(--os-line); }
+  & .app-terminal-scroll { scrollbar-color: var(--os-track) transparent; }
+  & .app-resource-track { background: var(--os-track); }
+  & .app-resource-track span { background: var(--os-accent); }
+  & .app-resource-track.is-memory span { background: var(--os-muted); }
+  & .app-process-mark { color: var(--os-accent); background: var(--os-selected); }
+  & .app-process-mark.is-system { color: var(--os-muted); background: var(--os-hover); }
+  & .app-settings-group { background: var(--os-raised); border-radius: var(--os-radius); }
+  & .app-switch { background: var(--os-track); border-color: var(--os-line); }
+  & .app-switch span { background: var(--os-muted); }
+  & .app-switch[aria-checked=true] { background: var(--os-accent-fill); border-color: var(--os-accent-fill); }
+  & .app-switch[aria-checked=true] span { background: var(--os-accent-ink); }
+  & .app-settings-note kbd { border-color: var(--os-line); background: var(--os-hover); }
+  & .app-about-logo { color: var(--os-accent-ink); background: var(--os-accent-fill); box-shadow: none; }
+  & :is(.app-about-link, .app-installed, .app-software-feature > span) { color: var(--os-accent); }
+  & .app-software-search { background: var(--os-raised); border-radius: var(--os-small-radius); }
+  & .app-software-search:focus-within { outline-color: var(--os-accent); }
+  & .app-software-feature { background: var(--os-raised); border-radius: var(--os-radius); }
+  & .app-software-feature::after { border-color: var(--os-line); box-shadow: 0 0 0 32px var(--os-hover), 0 0 0 65px var(--os-hover); }
+  & .app-button { color: var(--os-text); background: var(--os-raised); border-radius: var(--os-small-radius); }
+}
+
+/* Native radios keep arrow-key selection and an announced checked state. */
+.app-theme-picker { padding: 0; border: 0; margin: 23px 0 0; min-width: 0; }
+.app-theme-picker legend { padding: 0; margin-bottom: 12px; color: var(--os-text); font-size: 12px; font-weight: 500; }
+.app-theme-options { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 15px; }
+.app-theme-option { display: flex; flex-direction: column; position: relative; min-width: 0; cursor: pointer; }
+.app-theme-option > input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.app-theme-preview { position: relative; display: block; height: 92px; border-radius: 9px; border: 2px solid var(--os-line); overflow: hidden; box-shadow: 0 2px 4px #0001; }
+.app-theme-preview-wave { --mini-surface: #272a37; --mini-ink: #9aafd6; background: radial-gradient(ellipse at 90% 110%, #9b9ce0, transparent 65%), linear-gradient(125deg, #142445, #4c639c); }
+.app-theme-preview-monochrome { --mini-surface: #333; --mini-ink: #bcbcbc; background: linear-gradient(142deg, #171717 35%, #555 36%, #858585 46%, #292929 47%, #171717); }
+.app-theme-preview-pink { --mini-surface: #fff5fa; --mini-ink: #a93b6e; background: radial-gradient(circle at 25% 48%, #fff5fa 0, #f1bcd6 25%, transparent 26%), radial-gradient(circle at 91% 113%, #fff0f8 0, #e4a3c6 38%, transparent 39%), #f3c8de; }
+.app-theme-mini-bar { position: absolute; top: 0; left: 0; right: 0; height: 7px; background: var(--mini-surface); }
+.app-theme-mini-window { position: absolute; left: 28%; top: 24%; width: 49%; height: 47%; background: var(--mini-surface); border: 1px solid #ffffff35; border-radius: 4px; box-shadow: 0 3px 8px #0002; display: flex; flex-direction: column; gap: 5px; padding: 11px 8px 0; }
+.app-theme-mini-window::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 6px; background: var(--mini-ink); opacity: .2; }
+.app-theme-mini-window > i { width: 75%; height: 2px; background: var(--mini-ink); opacity: .6; }
+.app-theme-mini-window > i:last-child { width: 42%; }
+.app-theme-mini-dock { position: absolute; bottom: 5px; left: 50%; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px 5px; border-radius: 5px; background: var(--mini-surface); }
+.app-theme-mini-dock > i { width: 6px; height: 6px; border-radius: 2px; background: var(--mini-ink); }
+.app-theme-selected { position: absolute; bottom: 6px; right: 6px; width: 20px; height: 20px; border-radius: 50%; display: grid; place-items: center; background: var(--os-accent); color: var(--os-surface); opacity: 0; }
+.app-theme-option > input:checked + .app-theme-preview { border-color: var(--os-accent); }
+.app-theme-option > input:checked + .app-theme-preview .app-theme-selected { opacity: 1; }
+.app-theme-option > input:focus-visible + .app-theme-preview { outline: 2px solid var(--os-accent); outline-offset: 4px; }
+.app-theme-option:hover .app-theme-preview { outline: 1px solid var(--os-muted); outline-offset: 2px; }
+.app-theme-name { margin-top: 9px; font-size: 12px; font-weight: 500; color: var(--os-text); }
+.app-theme-description { font-size: 10px; margin-top: 2px; color: var(--os-muted); line-height: 1.5; }
+.app-theme-caption { font-size: 11px; margin: 13px 0 0; color: var(--os-muted); }
+.app-wallpaper-section .app-wallpaper-preview { height: 55px; }
+.app-wallpaper-section .app-wallpaper-option { max-width: 150px; }
+.app-about-logo > .wave-mark { width: 51px; height: 51px; }
+.app-settings-brand > .wave-mark { width: 18px; height: 18px; }
+@media (max-width: 600px) {
+  .app-theme-options { gap: 10px; }
+  .app-theme-preview { height: 78px; }
+  .app-theme-name { font-size: 11px; }
+  .app-theme-description { display: none; }
+  .app-theme-caption { font-size: 10px; }
+  .desktop-shell[data-theme="pink"] .desktop-wallpaper::before { width: 120vw; bottom: -10%; right: -55%; }
+  .desktop-shell[data-theme="pink"] .desktop-wallpaper::after { width: 55vw; left: 15%; top: 25%; }
+}

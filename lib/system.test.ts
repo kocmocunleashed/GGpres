@@ -80,3 +80,41 @@ test("shell completion, safe jokes, and reset retain intentional boundaries", ()
   assert.equal(useSystemStore.getState().lessonIndex, 0);
   assert.equal(useSystemStore.getState().processes.length, 3);
 });
+
+test("the runner shares process lifecycle with the desktop and terminal", () => {
+  const before = totalMemory(useSystemStore.getState().processes);
+  assert.match(run("dino").output, /Opening Dino Runner/);
+  const runner = useSystemStore.getState().windows.find((win) => win.appId === "runner")!;
+  assert.match(run("ps").output, new RegExp(`${runner.processId} +dino-runner`));
+  assert.ok(totalMemory(useSystemStore.getState().processes) > before);
+  useSystemStore.getState().minimizeWindow(runner.id);
+  run("dino");
+  assert.equal(useSystemStore.getState().windows.filter((win) => win.appId === "runner").length, 1);
+  assert.equal(useSystemStore.getState().windows.find((win) => win.id === runner.id)?.minimized, false);
+  assert.match(run(`kill ${runner.processId}`).output, /Ended dino-runner/);
+  assert.equal(useSystemStore.getState().windows.length, 0);
+  assert.equal(totalMemory(useSystemStore.getState().processes), before);
+});
+
+test("themes preserve open apps and survive a virtual session restart", () => {
+  useSystemStore.getState().openApp("files");
+  const windows = useSystemStore.getState().windows;
+  const processes = useSystemStore.getState().processes;
+  for (const theme of ["monochrome", "pink"] as const) {
+    useSystemStore.getState().setTheme(theme);
+    assert.equal(useSystemStore.getState().theme, theme);
+    assert.equal(useSystemStore.getState().windows, windows);
+    assert.equal(useSystemStore.getState().processes, processes);
+  }
+  run("reboot");
+  assert.equal(useSystemStore.getState().theme, "pink");
+  useSystemStore.getState().setTheme("wave");
+});
+
+test("system identity agrees across the virtual filesystem and shell", () => {
+  assert.match(run("cat /etc/os-release").output, /NAME="opitlcalOS"/);
+  assert.equal(run("hostname").output, run("cat /etc/hostname").output);
+  assert.match(run("neofetch").output, /opitlcalOS 1.0 Classroom/);
+  assert.match(run("uname -a").output, /opitlcal-workstation/);
+  assert.doesNotMatch(run("top").output, /WaveOS/);
+});

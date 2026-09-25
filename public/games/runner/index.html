@@ -1,0 +1,21 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; base-uri 'none'; form-action 'none'">
+  <title>Dino Runner game</title>
+  <link rel="stylesheet" href="frame.css">
+  <script src="engine.js" defer></script>
+  <script src="adapter.js" defer></script>
+</head>
+<body>
+  <main class="interstitial-wrapper" aria-label="Dinosaur runner. Space or up arrow to jump, down arrow to duck, Escape to pause.">
+    <span class="icon icon-offline" hidden></span>
+  </main>
+  <div hidden>
+    <img id="offline-resources-1x" src="offline-sprite-1x.png" alt="">
+    <img id="offline-resources-2x" src="offline-sprite-2x.png" alt="">
+  </div>
+</body>
+</html>

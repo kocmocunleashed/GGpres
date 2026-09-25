@@ -28,7 +28,7 @@ function DeskNote() {
       <h2 id="room-note-title">Under the desktop.</h2>
       <p>You can touch the hardware. You interact with the desktop. The operating system connects the two.</p>
       <p>Hardware executes instructions. The OS coordinates CPU time, memory, files, and devices so applications can work together.</p>
-      <p>Inside WaveOS, open a few apps. Then run <code>ps</code> in Terminal to see their processes.</p>
+      <p>Inside opitlcalOS, open a few apps. Then run <code>ps</code> in Terminal to see their processes.</p>
       <p className="room-note-postscript">P.S. Coffee belongs in the mug.<br />The computer has enough processes already.</p>
       <button className="room-note-done" onClick={closeNote}>Put note down <span aria-hidden="true">↙</span></button>
     </div>

@@ -101,16 +101,16 @@ export default function DesktopSession() {
       // Let app and lesson handlers finish before treating Escape as camera navigation.
       queueMicrotask(() => {
         if (event.defaultPrevented || !activeRef.current || !hostRef.current?.canFrame || hostRef.current.expanded || useSystemStore.getState().lessonPresenting) return;
-        postDesktopMessage({ source: "waveos-desktop", type: "view", action: "desk" });
+        postDesktopMessage({ source: "opitlcalos-desktop", type: "view", action: "desk" });
       });
     }
 
     const unsubscribe = useSystemStore.subscribe((state, previous) => {
       if (state.lessonPresenting !== previous.lessonPresenting) {
-        postDesktopMessage({ source: "waveos-desktop", type: "presentation", active: state.lessonPresenting });
+        postDesktopMessage({ source: "opitlcalos-desktop", type: "presentation", active: state.lessonPresenting });
       }
       if (!applyingHostPreferences && (state.muted !== previous.muted || state.reducedMotion !== previous.reducedMotion || state.motionPaused !== previous.motionPaused)) {
-        postDesktopMessage({ source: "waveos-desktop", type: "preferences", muted: state.muted, reducedMotion: state.reducedMotion, motionPaused: state.motionPaused });
+        postDesktopMessage({ source: "opitlcalos-desktop", type: "preferences", muted: state.muted, reducedMotion: state.reducedMotion, motionPaused: state.motionPaused });
       }
       if (!activeRef.current || state.muted || applyingHostPreferences) return;
       if (state.lessonIndex !== previous.lessonIndex && state.lessonPresenting) playTone("scene");
@@ -122,7 +122,7 @@ export default function DesktopSession() {
     window.addEventListener("keydown", blockInactiveKeyboard, true);
     window.addEventListener("keyup", blockInactiveKeyboard, true);
     window.addEventListener("keydown", forwardUnhandledEscape);
-    postDesktopMessage({ source: "waveos-desktop", type: "ready" });
+    postDesktopMessage({ source: "opitlcalos-desktop", type: "ready" });
     playBootOnce();
     return () => {
       unsubscribe();
@@ -142,15 +142,15 @@ export default function DesktopSession() {
   }, [active]);
 
   const restart = useCallback(() => {
-    postDesktopMessage({ source: "waveos-desktop", type: "restart" });
+    postDesktopMessage({ source: "opitlcalos-desktop", type: "restart" });
     useSystemStore.getState().resetSession();
     setSession((value) => value + 1);
     bootPlayed.current = false;
     if (window.parent === window && !useSystemStore.getState().muted) playTone("boot");
   }, []);
 
-  const backToDesk = useCallback(() => postDesktopMessage({ source: "waveos-desktop", type: "view", action: "desk" }), []);
-  const toggleExpanded = useCallback(() => postDesktopMessage({ source: "waveos-desktop", type: "view", action: host?.expanded ? "frame" : "expand" }), [host?.expanded]);
+  const backToDesk = useCallback(() => postDesktopMessage({ source: "opitlcalos-desktop", type: "view", action: "desk" }), []);
+  const toggleExpanded = useCallback(() => postDesktopMessage({ source: "opitlcalos-desktop", type: "view", action: host?.expanded ? "frame" : "expand" }), [host?.expanded]);
 
   return <main className="desktop-session" inert={!active} data-active={active} data-powered={powered} data-reduced-motion={reducedMotion || !!systemReducedMotion} data-motion-paused={motionPaused}>
     <DesktopShell key={session} active={active} onRestart={restart} onBackToDesk={embedded && host?.canFrame ? backToDesk : undefined} onToggleExpanded={embedded && host?.canFrame ? toggleExpanded : undefined} expanded={host?.expanded ?? false} />

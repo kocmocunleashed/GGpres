@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "bun test lib/system.test.ts lib/room.test.ts"
+    "test": "bun test lib/system.test.ts lib/room.test.ts lib/runner.test.ts"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

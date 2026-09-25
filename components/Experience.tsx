@@ -123,7 +123,7 @@ export default function Experience() {
     </AnimatePresence>
     {started && !introducing && !expanded && !presenting && !graphicsFallback && <>
       {(view === "desk" || view === "orbit" || view === "room") && <aside className="computer-info" aria-label="Workstation controls">
-        <h1>Operating Systems</h1><p>WaveOS · Learning Edition</p>
+        <h1>Operating Systems</h1><p>opitlcalOS · Learning Edition</p>
         <div className="computer-info-row"><SessionClock /><button onClick={toggleSound} title={muted ? "Enable sound" : "Mute sound"} aria-label={muted ? "Enable sound" : "Mute sound"}>{muted ? <VolumeX size={17} /> : <Volume2 size={17} />}</button>{view !== "room" && <button onClick={() => setView(view === "orbit" ? "overview" : "orbit")} title={view === "orbit" ? "Return to computer" : "Free camera"} aria-label={view === "orbit" ? "Return to computer" : "Free camera"} aria-pressed={view === "orbit"}>{view === "orbit" ? <MousePointer2 size={16} /> : <Camera size={17} />}</button>}</div>
       </aside>}
       {view === "room" ? <RoomControls onExit={leaveRoom} /> : <nav className="computer-navigation" aria-label="Computer views">

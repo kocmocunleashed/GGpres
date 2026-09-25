@@ -1,6 +1,6 @@
-WaveOS — Learning Edition
+opitlcalOS — Learning Edition
 
-WaveOS is an original, fictional educational simulation. It is not an actual Linux distribution and is not affiliated with Fedora, GNOME, IBM, Henry Heffernan, or Geometry Dash.
+opitlcalOS is an original, fictional educational simulation. It is not an actual Linux distribution and is not affiliated with Fedora, GNOME, IBM, Henry Heffernan, or Geometry Dash.
 
 The workstation models and baked textures in /models/henry/ are reused from:
 https://github.com/henryjeff/portfolio-website
@@ -21,10 +21,19 @@ smudges.jpg, shadow-compressed.png. Asset files are copied unchanged; the
 portfolio paper mesh uses a blank material in the scene. Original hardware branding
 remains part of the model texture.
 
-WaveOS's desktop, wallpaper, lesson geometry, and synthesized audio are
+opitlcalOS's desktop, wallpaper, lesson geometry, and synthesized audio are
 original to this project. The source portfolio's OS, personal content,
 music, and video are not shown. No Geometry Dash level art or music
 is distributed.
+
+DINO RUNNER
+
+Game engine and sprites reused from https://github.com/wayou/t-rex-runner
+Pinned commit: 5455bfa408ec6b707c7300ff194b7390733a766d
+The engine retains its Chromium copyright header. Both BSD-3-Clause notices
+are distributed at /games/runner/LICENSE and /games/runner/LICENSE.chromium.
+Source provenance and local integration changes: /games/runner/SOURCE.md
+No upstream demo media or sound files are bundled.
 
 Design references:
 - Henry Heffernan — workstation assets and interaction: https://github.com/henryjeff/portfolio-website

@@ -3,7 +3,7 @@ import { totalCpu, totalMemory, useSystemStore } from "@/store/system";
 
 export type TerminalContext = { cwd: string; history: string[] };
 export type TerminalResult = { output: string; cwd?: string; clear?: boolean };
-const COMMANDS = ["help", "ls", "cd", "pwd", "cat", "clear", "history", "whoami", "uname", "hostname", "ps", "top", "free", "kill", "man", "neofetch", "lesson", "sudo", "rm", "reboot", "fedora", "geometry-dash"];
+const COMMANDS = ["help", "ls", "cd", "pwd", "cat", "clear", "history", "whoami", "uname", "hostname", "ps", "top", "free", "kill", "man", "neofetch", "lesson", "dino", "sudo", "rm", "reboot", "fedora", "geometry-dash"];
 const MANUAL: Record<string, string> = {
   ls: "ls [path]\nList the files and folders at a virtual path. Try ls /etc.", cd: "cd [path]\nChange directory. With no path, return home. Use cd .. to go up.",
   cat: "cat <file> [file...]\nRead a virtual text file. Try cat /etc/os-release or cat /proc/meminfo.",
@@ -11,8 +11,9 @@ const MANUAL: Record<string, string> = {
   top: "top\nShow one snapshot of simulated process and CPU usage. Open System Monitor for the live shared view.",
   kill: "kill <pid>\nEnd a simulated app process and close its window. Protected system processes cannot be ended in this lesson.",
   free: "free [-m|-h]\nShow the simulated system's memory allocation. These numbers match System Monitor.",
-  uname: "uname [-a|-r]\nShow this fictional system's kernel name or version. WaveOS does not run a real kernel inside your browser.",
+  uname: "uname [-a|-r]\nShow this fictional system's kernel name or version. opitlcalOS does not run a real kernel inside your browser.",
   lesson: "lesson\nOpen or focus the Operating Systems lesson.",
+  dino: "dino\nOpen or focus Dino Runner. Space or Up jumps; Down ducks. Pauses when you leave the game.",
   reboot: "reboot\nReset the virtual desktop session, closing every app. Your browser and real computer are unaffected.",
 };
 
@@ -29,10 +30,10 @@ export function executeCommand(input: string, context: TerminalContext): Termina
   const usedMemory = totalMemory(state.processes);
   const path = resolvePath(args[0] ?? "", context.cwd);
   switch (command) {
-    case "help": return { output: `Wave shell · a safe, simulated command line\n\n${COMMANDS.join("  ")}\n\nTry: ls Documents → cat Documents/notes.txt\nOpen Files, then run ps and kill <its PID>.\nUse ↑ / ↓ for history. Tab completes commands and paths.\nNothing here can access your real computer.` };
+    case "help": return { output: `opitlcal shell · a safe, simulated command line\n\n${COMMANDS.join("  ")}\n\nTry: ls Documents → cat Documents/notes.txt\nOpen Files, then run ps and kill <its PID>.\nUse ↑ / ↓ for history. Tab completes commands and paths.\nNothing here can access your real computer.` };
     case "pwd": return { output: context.cwd };
     case "whoami": return { output: "student" };
-    case "hostname": return { output: "wave-workstation" };
+    case "hostname": return { output: "opitlcal-workstation" };
     case "clear": return { output: "", clear: true };
     case "history": return { output: context.history.map((entry, index) => `${String(index + 1).padStart(3)}  ${entry}`).join("\n") };
     case "ls": {
@@ -56,9 +57,9 @@ export function executeCommand(input: string, context: TerminalContext): Termina
         return readVirtualFile(filesystem, target, { usedMemory, startedAt: state.startedAt }) ?? `cat: ${arg}: no such file`;
       }).join("\n") };
     }
-    case "uname": return { output: args.includes("-a") ? "Linux wave-workstation 6.12.0-wave #1 SIMULATED x86_64 GNU/Linux" : args.includes("-r") ? "6.12.0-wave (simulated)" : "Linux (simulated)" };
+    case "uname": return { output: args.includes("-a") ? "Linux opitlcal-workstation 6.12.0-opitlcal #1 SIMULATED x86_64 GNU/Linux" : args.includes("-r") ? "6.12.0-opitlcal (simulated)" : "Linux (simulated)" };
     case "ps": return { output: processTable() };
-    case "top": return { output: `WaveOS · simulated resource snapshot\n${state.processes.length} processes · ${totalCpu(state.processes).toFixed(1)}% CPU · ${usedMemory} / ${TOTAL_MEMORY_MB} MiB\n\n${processTable()}\n\nFor a live view, open System Monitor.` };
+    case "top": return { output: `opitlcalOS · simulated resource snapshot\n${state.processes.length} processes · ${totalCpu(state.processes).toFixed(1)}% CPU · ${usedMemory} / ${TOTAL_MEMORY_MB} MiB\n\n${processTable()}\n\nFor a live view, open System Monitor.` };
     case "free": return { output: `SIMULATED MEMORY (MiB)\n            total     used     available\nMem:       ${String(TOTAL_MEMORY_MB).padStart(6)}   ${String(usedMemory).padStart(6)}   ${String(TOTAL_MEMORY_MB - usedMemory).padStart(9)}\nSwap:           0        0           0` };
     case "kill": {
       if (args.length !== 1 || !/^\d+$/.test(args[0])) return { output: "Usage: kill <pid>  ·  Use ps to find a process ID." };
@@ -69,9 +70,10 @@ export function executeCommand(input: string, context: TerminalContext): Termina
       state.killProcess(pid);
       return { output: `Ended ${process.name} (${pid}). Released ${process.memory} MiB.` };
     }
-    case "man": return { output: args[0] ? MANUAL[args[0]] ?? (COMMANDS.includes(args[0]) ? `${args[0]}\nA built-in WaveOS learning command. Type help for the full command list.` : `No manual entry for ${args[0]}.`) : "Usage: man <command>. Try man kill." };
-    case "neofetch": return { output: "       /\\         student@wave-workstation\n      /  \\        ─────────────────────────\n     / /\\ \\       OS       WaveOS 1.0 Classroom\n    / /  \\ \\      Kernel   Linux 6.12 (simulated)\n    \\ \\  / /      Desktop  Wave Shell · GNOME-inspired\n     \\ \\/ /       Shell    wave-sh\n      \\  /        Memory   " + usedMemory + " / 8192 MiB\n       \\/         Motto    Make complexity usable.\n\nA fictional educational system. Not an official Fedora product." };
+    case "man": return { output: args[0] ? MANUAL[args[0]] ?? (COMMANDS.includes(args[0]) ? `${args[0]}\nA built-in opitlcalOS learning command. Type help for the full command list.` : `No manual entry for ${args[0]}.`) : "Usage: man <command>. Try man kill." };
+    case "neofetch": return { output: "       /\\         student@opitlcal-workstation\n      /  \\        ─────────────────────────\n     / /\\ \\       OS       opitlcalOS 1.0 Classroom\n    / /  \\ \\      Kernel   Linux 6.12 (simulated)\n    \\ \\  / /      Desktop  opitlcal Shell · GNOME-inspired\n     \\ \\/ /       Shell    opitlcal-sh\n      \\  /        Memory   " + usedMemory + " / 8192 MiB\n       \\/         Motto    Make complexity usable.\n\nA fictional educational system. Not an official Fedora product." };
     case "lesson": state.openApp("lesson"); return { output: "Opening Operating Systems…" };
+    case "dino": state.openApp("runner"); return { output: "Opening Dino Runner…" };
     case "sudo": return { output: args[0] === "rm" ? "Absolutely not.\nThis is a school project." : "student is already the administrator of their curiosity.\nThis simulated shell does not elevate privileges." };
     case "rm": return { output: "This classroom filesystem is read-only. Your notes are safe." };
     case "reboot": state.resetSession(); state.notify("Session restarted", "A fresh desktop. The curiosity stays."); return { output: "Restarting virtual session…" };

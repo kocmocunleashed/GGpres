@@ -58,7 +58,7 @@ export default function CSS3DScreen(props: Props) {
     element.style.height = "1024px";
     const iframe = document.createElement("iframe");
     iframe.className = "world-desktop-frame";
-    iframe.title = "WaveOS desktop";
+    iframe.title = "opitlcalOS desktop";
     iframe.allow = "fullscreen; autoplay";
     iframe.setAttribute("allowfullscreen", "");
     iframe.setAttribute("referrerpolicy", "same-origin");
@@ -82,7 +82,7 @@ export default function CSS3DScreen(props: Props) {
 
     function state(): HostStateMessage {
       const current = latest.current;
-      return { source: "waveos-host", type: "state", active: current.powered && current.view !== "loading" && (current.view === "monitor" || current.expanded), powered: current.powered, expanded: current.expanded, canFrame: current.canFrame, muted: current.muted, reducedMotion: current.reducedMotion, motionPaused: current.motionPaused };
+      return { source: "opitlcalos-host", type: "state", active: current.powered && current.view !== "loading" && (current.view === "monitor" || current.expanded), powered: current.powered, expanded: current.expanded, canFrame: current.canFrame, muted: current.muted, reducedMotion: current.reducedMotion, motionPaused: current.motionPaused };
     }
     function sendState() { iframe.contentWindow?.postMessage(state(), window.location.origin); }
     function resize() {
@@ -177,7 +177,7 @@ export default function CSS3DScreen(props: Props) {
     iframe.tabIndex = active ? 0 : -1;
     iframe.setAttribute("aria-hidden", String(!active));
     object.style.pointerEvents = active ? "auto" : "none";
-    const message: HostStateMessage = { source: "waveos-host", type: "state", active, powered: props.powered, expanded: props.expanded, canFrame: props.canFrame, muted: props.muted, reducedMotion: props.reducedMotion, motionPaused: props.motionPaused };
+    const message: HostStateMessage = { source: "opitlcalos-host", type: "state", active, powered: props.powered, expanded: props.expanded, canFrame: props.canFrame, muted: props.muted, reducedMotion: props.reducedMotion, motionPaused: props.motionPaused };
     iframe.contentWindow?.postMessage(message, window.location.origin);
   }, [props.view, props.powered, props.expanded, props.canFrame, props.muted, props.reducedMotion, props.motionPaused]);
 

@@ -1,6 +1,6 @@
 import { CanvasTexture, SRGBColorSpace } from "three";
 
-/** Locally drawn WaveOS preview; the actual desktop takes over as accessible DOM. */
+/** Locally drawn opitlcalOS preview; the actual desktop takes over as accessible DOM. */
 export function createScreenTexture() {
   const canvas = document.createElement("canvas");
   canvas.width = 1280;
@@ -115,7 +115,7 @@ export function createScreenTexture() {
   c.textAlign = "right";
   c.fillStyle = "#f6f8ff80";
   c.font = '300 44px "IBM Plex Sans", sans-serif';
-  c.fillText("waveOS", 1206, 852);
+  c.fillText("opitlcalOS", 1206, 852);
 
   rounded(393, 922, 494, 78, 21, "#151c30d9");
   for (let i = 0; i < 6; i++) appIcon(i, 408 + i * 67, 935);

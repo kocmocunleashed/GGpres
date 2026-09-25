@@ -2,7 +2,7 @@
 export type WorkstationView = "loading" | "overview" | "desk" | "monitor" | "orbit" | "room";
 
 export type HostStateMessage = {
-  source: "waveos-host";
+  source: "opitlcalos-host";
   type: "state";
   active: boolean;
   powered: boolean;
@@ -13,7 +13,7 @@ export type HostStateMessage = {
   motionPaused: boolean;
 };
 
-export type DesktopMessage = { source: "waveos-desktop" } & (
+export type DesktopMessage = { source: "opitlcalos-desktop" } & (
   | { type: "ready" }
   | { type: "presentation"; active: boolean }
   | { type: "preferences"; muted: boolean; reducedMotion: boolean; motionPaused: boolean }
@@ -26,12 +26,12 @@ function isRecord(value: unknown): value is Record<string, unknown> {
 }
 
 export function isHostStateMessage(value: unknown): value is HostStateMessage {
-  return isRecord(value) && value.source === "waveos-host" && value.type === "state"
+  return isRecord(value) && value.source === "opitlcalos-host" && value.type === "state"
     && ["active", "powered", "expanded", "canFrame", "muted", "reducedMotion", "motionPaused"].every((key) => typeof value[key] === "boolean");
 }
 
 export function isDesktopMessage(value: unknown): value is DesktopMessage {
-  if (!isRecord(value) || value.source !== "waveos-desktop") return false;
+  if (!isRecord(value) || value.source !== "opitlcalos-desktop") return false;
   if (value.type === "ready" || value.type === "restart") return true;
   if (value.type === "presentation") return typeof value.active === "boolean";
   if (value.type === "preferences") return ["muted", "reducedMotion", "motionPaused"].every((key) => typeof value[key] === "boolean");

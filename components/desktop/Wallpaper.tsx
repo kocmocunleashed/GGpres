@@ -27,7 +27,7 @@ export default function Wallpaper() {
         <path d="M-100 1320C569 918 1012 1099 1398 689 1558 519 1620 333 1772 253 1635 609 1933 826 2090 851L2130 1175Z" fill="url(#wall-fold)" />
         <path d="M-100 1320C569 918 1012 1099 1398 689 1558 519 1620 333 1772 253" fill="none" stroke="url(#wall-edge)" strokeWidth="1.5" />
       </svg>
-      <div className="desktop-wallpaper-wordmark">wave<span>OS</span></div>
+      <div className="desktop-wallpaper-wordmark">opitlcal<span>OS</span></div>
     </div>
   );
 }

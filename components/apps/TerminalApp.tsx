@@ -34,13 +34,13 @@ export function TerminalApp() {
   return (
     <div className="app-terminal" onClick={(event) => { if (!(event.target instanceof HTMLButtonElement) && !window.getSelection()?.toString()) inputRef.current?.focus(); }}>
       <div className="app-terminal-scroll" ref={scrollRef}>
-        {showWelcome && <div className="app-terminal-welcome"><span>WaveOS 1.0</span><span className="app-terminal-dim"> — Classroom edition</span><p>A small window into a bigger system.</p><p className="app-terminal-dim">Type <button onClick={() => { setInput("help"); inputRef.current?.focus(); }}>help</button> to get started. This is a simulated shell.</p></div>}
+        {showWelcome && <div className="app-terminal-welcome"><span>opitlcalOS 1.0</span><span className="app-terminal-dim"> — Classroom edition</span><p>A small window into a bigger system.</p><p className="app-terminal-dim">Type <button onClick={() => { setInput("help"); inputRef.current?.focus(); }}>help</button> to get started. This is a simulated shell.</p></div>}
         <div role="log" aria-label="Terminal output" aria-live="polite" aria-relevant="additions">
-          {entries.map((entry, index) => <div className="app-terminal-entry" key={index}><div className="app-terminal-command"><span className="app-terminal-user">student@wave</span><span className="app-terminal-dim">:</span><span className="app-terminal-path">{shortPath(entry.cwd)}</span><span className="app-terminal-prompt">$</span>{entry.input}</div>{entry.output && <pre>{entry.output}</pre>}</div>)}
+          {entries.map((entry, index) => <div className="app-terminal-entry" key={index}><div className="app-terminal-command"><span className="app-terminal-user">student@opitlcal</span><span className="app-terminal-dim">:</span><span className="app-terminal-path">{shortPath(entry.cwd)}</span><span className="app-terminal-prompt">$</span>{entry.input}</div>{entry.output && <pre>{entry.output}</pre>}</div>)}
         </div>
         <form className="app-terminal-input-row" onSubmit={submit}>
-          <label htmlFor="wave-terminal-input" className="app-terminal-label"><span className="app-terminal-user">student@wave</span><span className="app-terminal-dim">:</span><span className="app-terminal-path">{shortPath(cwd)}</span><span className="app-terminal-prompt">$</span></label>
-          <input id="wave-terminal-input" ref={inputRef} aria-label="Terminal command" autoFocus autoComplete="off" autoCapitalize="none" spellCheck={false} value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => {
+          <label htmlFor="opitlcal-terminal-input" className="app-terminal-label"><span className="app-terminal-user">student@opitlcal</span><span className="app-terminal-dim">:</span><span className="app-terminal-path">{shortPath(cwd)}</span><span className="app-terminal-prompt">$</span></label>
+          <input id="opitlcal-terminal-input" ref={inputRef} aria-label="Terminal command" autoFocus autoComplete="off" autoCapitalize="none" spellCheck={false} value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => {
             event.stopPropagation();
             if (event.key === "Tab" && !event.shiftKey) { event.preventDefault(); setInput(completeCommand(input, cwd)); }
             if (event.key === "ArrowUp" && history.length) { event.preventDefault(); if (historyIndex === -1) setDraft(input); const index = historyIndex === -1 ? history.length - 1 : Math.max(0, historyIndex - 1); setHistoryIndex(index); setInput(history[index]); }
@@ -50,7 +50,7 @@ export function TerminalApp() {
           }} />
         </form>
       </div>
-      <footer className="app-statusbar"><span>wave-sh</span><span>Virtual session · no host access</span></footer>
+      <footer className="app-statusbar"><span>opitlcal-sh</span><span>Virtual session · no host access</span></footer>
     </div>
   );
 }

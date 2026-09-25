@@ -17,11 +17,11 @@ function StatusPanel({ onClose, onRestart, onBackToDesk, onToggleExpanded, expan
       <button aria-pressed={!muted} className={!muted ? "is-on" : ""} onClick={() => { useSystemStore.getState().setMuted(!muted); if (muted) playTone(); }}>{muted ? <VolumeX size={21} /> : <Volume2 size={21} />}<span>Sound<small>{muted ? "Off" : "On"}</small></span>{!muted && <Check size={14} />}</button>
       <button aria-pressed={reducedMotion} className={reducedMotion ? "is-on" : ""} onClick={() => useSystemStore.getState().setReducedMotion(!reducedMotion)}><Accessibility size={21} /><span>Reduce motion<small>{reducedMotion ? "On" : "Off"}</small></span>{reducedMotion && <Check size={14} />}</button>
     </div>
-    <div className="desktop-network-info"><Wifi size={17} /><span>WaveOS Classroom<small>Virtual connection · works locally</small></span></div>
+    <div className="desktop-network-info"><Wifi size={17} /><span>opitlcalOS Classroom<small>Virtual connection · works locally</small></span></div>
     <div className="desktop-status-actions">
       {onToggleExpanded && <button onClick={() => { onClose(); onToggleExpanded(); }}>{expanded ? <Minimize2 size={17} /> : <Expand size={17} />}{expanded ? "Return to monitor" : "Expand desktop"}</button>}
       {onBackToDesk && <button onClick={() => { onClose(); onBackToDesk(); }}><Monitor size={17} />Back to desk</button>}
-      <button onClick={() => { useSystemStore.getState().openApp("settings"); onClose(); }}><Settings size={17} />Settings</button><button onClick={() => { useSystemStore.getState().openApp("about"); onClose(); }}><CircleHelp size={17} />About WaveOS</button><button onClick={onRestart}><LogOut size={17} />Restart experience</button>
+      <button onClick={() => { useSystemStore.getState().openApp("settings"); onClose(); }}><Settings size={17} />Settings</button><button onClick={() => { useSystemStore.getState().openApp("about"); onClose(); }}><CircleHelp size={17} />About opitlcalOS</button><button onClick={onRestart}><LogOut size={17} />Restart experience</button>
     </div>
   </div>;
 }

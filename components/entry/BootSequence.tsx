@@ -12,5 +12,5 @@ export default function BootSequence({ onComplete, reducedMotion }: { onComplete
     const complete = setTimeout(onComplete, reducedMotion ? 180 : 1200);
     return () => { clearInterval(interval); clearTimeout(complete); };
   }, [onComplete, reducedMotion]);
-  return <div className="boot-screen" role="status" aria-live="polite"><WaveMark /><span className="boot-brand">wave<span>OS</span></span><div className="boot-progress"><span style={{ width: `${(step + 1) / 3 * 100}%` }} /></div><p>{steps[step]}<span aria-hidden="true">…</span></p><small>LEARNING EDITION</small></div>;
+  return <div className="boot-screen" role="status" aria-live="polite"><WaveMark /><span className="boot-brand">opitlcal<span>OS</span></span><div className="boot-progress"><span style={{ width: `${(step + 1) / 3 * 100}%` }} /></div><p>{steps[step]}<span aria-hidden="true">…</span></p><small>LEARNING EDITION</small></div>;
 }

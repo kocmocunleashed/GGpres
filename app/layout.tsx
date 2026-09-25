@@ -9,7 +9,7 @@ import "@fontsource/ibm-plex-mono/latin-500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "WaveOS — Beneath the Interface",
+  title: "opitlcalOS — Beneath the Interface",
   description: "An interactive journey through operating systems. Enter a workstation, explore a working desktop, and discover the complexity underneath.",
 };
 

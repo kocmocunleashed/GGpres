@@ -2,7 +2,7 @@ import { Grid2X2 } from "lucide-react";
 import { useSystemStore, type AppId } from "@/store/system";
 import AppIcon from "./AppIcon";
 
-const apps: { id: AppId; label: string }[] = [{ id: "lesson", label: "Operating Systems" }, { id: "files", label: "Files" }, { id: "terminal", label: "Terminal" }, { id: "system-monitor", label: "System Monitor" }, { id: "software", label: "Software" }, { id: "settings", label: "Settings" }];
+const apps: { id: AppId; label: string }[] = [{ id: "lesson", label: "Operating Systems" }, { id: "files", label: "Files" }, { id: "terminal", label: "Terminal" }, { id: "runner", label: "Dino Runner" }, { id: "system-monitor", label: "System Monitor" }, { id: "software", label: "Software" }, { id: "settings", label: "Settings" }];
 
 export default function Dock({ onActivities, overview }: { onActivities: () => void; overview: boolean }) {
   const windows = useSystemStore((s) => s.windows);

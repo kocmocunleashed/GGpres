@@ -13,12 +13,14 @@ import AppIcon from "./AppIcon";
 import NotificationToast from "./NotificationToast";
 import "./desktop.css";
 import "@/components/apps/apps.css";
+import "./themes.css";
 
 const LessonEngine = dynamic(() => import("@/components/lesson/LessonEngine"));
 
 export default function DesktopShell({ onRestart, active = true, onBackToDesk, onToggleExpanded, expanded = false }: { onRestart: () => void; active?: boolean; onBackToDesk?: () => void; onToggleExpanded?: () => void; expanded?: boolean }) {
   const [overview, setOverview] = useState(false);
   const [welcome, setWelcome] = useState(true);
+  const theme = useSystemStore((s) => s.theme);
   const presenting = useSystemStore((s) => s.lessonPresenting);
   const lessonIndex = useSystemStore((s) => s.lessonIndex);
   const lessonComplete = useSystemStore((s) => s.lessonComplete);
@@ -48,14 +50,14 @@ export default function DesktopShell({ onRestart, active = true, onBackToDesk, o
 
   const latest = notifications.at(-1);
   return <>
-    <div className="desktop-shell" aria-label="WaveOS desktop" inert={presenting || !active}>
+    <div className="desktop-shell" data-theme={theme} aria-label="opitlcalOS desktop" inert={presenting || !active}>
       <Wallpaper />
       <TopBar overview={overview} onActivities={toggleOverview} onRestart={onRestart} onBackToDesk={onBackToDesk} onToggleExpanded={onToggleExpanded} expanded={expanded} />
       <div className="desktop-shortcuts" aria-label="Desktop shortcuts">
         <button onClick={() => useSystemStore.getState().openApp("lesson")}><AppIcon appId="lesson" size={58} /><span>Operating<br />Systems</span><span className="desktop-shortcut-arrow"><ArrowUpRight size={10} /></span></button>
         <button onClick={() => useSystemStore.getState().openApp("files")}><AppIcon appId="files" size={56} /><span>Home</span></button>
       </div>
-      <h1 className="sr-only">WaveOS desktop</h1>
+      <h1 className="sr-only">opitlcalOS desktop</h1>
       {welcome && !overview && <aside className="desktop-welcome" aria-labelledby="desktop-welcome-title">
         <AppIcon appId="lesson" size={40} />
         <div><h2 id="desktop-welcome-title">Make yourself at home.</h2><p>Open an app. Follow your curiosity.</p><button className="desktop-welcome-start" onClick={() => { setWelcome(false); useSystemStore.getState().openApp("lesson"); }}>Begin the lesson <ArrowUpRight size={15} /></button></div>
@@ -66,7 +68,7 @@ export default function DesktopShell({ onRestart, active = true, onBackToDesk, o
       {overview && <Activities onClose={closeOverview} />}
       <Dock onActivities={toggleOverview} overview={overview} />
       {lessonIndex > 0 && !lessonComplete && !overview && <button className="desktop-resume" onClick={() => { const state = useSystemStore.getState(); state.openApp("lesson"); state.setLessonPresenting(true); }}><Play size={13} fill="currentColor" /> Resume lesson <span>↗</span></button>}
-      <div className="desktop-edition">WaveOS <span>·</span> Learning Edition</div>
+      <div className="desktop-edition">opitlcalOS <span>·</span> Learning Edition</div>
     </div>
     {presenting && <LessonEngine />}
   </>;

@@ -15,11 +15,11 @@ function AboutExperience({ onClose }: { onClose: () => void }) {
     <div className="entry-info-dialog" role="dialog" aria-modal="true" aria-labelledby="experience-title" ref={ref} onClick={(e) => e.stopPropagation()}>
       <button className="entry-icon-button entry-info-close" aria-label="Close information" onClick={onClose}><X size={18} /></button>
       <WaveMark /><h2 id="experience-title">Beneath the interface.</h2>
-      <p>A short, interactive lesson about the systems that make a computer usable. Enter the workstation, explore WaveOS, then open Operating Systems.</p>
-      <p>WaveOS is a fictional teaching environment. Its files, processes, and resource usage are simulated entirely in your browser.</p>
+      <p>A short, interactive lesson about the systems that make a computer usable. Enter the workstation, explore opitlcalOS, then open Operating Systems.</p>
+      <p>opitlcalOS is a fictional teaching environment. Its files, processes, and resource usage are simulated entirely in your browser.</p>
       <div className="entry-info-keys"><span><kbd>→</kbd> <kbd>Space</kbd> Next scene</span><span><kbd>Esc</kbd> Return to desktop</span><span><kbd>M</kbd> Sound · <kbd>P</kbd> Pause motion</span></div>
       <h3>Design & credits</h3>
-      <p>Workstation, camera choreography, screen framing, and outer interface adapted from <a href="https://github.com/henryjeff/portfolio-website" target="_blank" rel="noreferrer">Henry Heffernan’s portfolio</a> under the MIT license. Computer model by Mickael Boitte; environment models by Sean Nicolas; textures by Henry Heffernan. Desktop informed by the <a href="https://developer.gnome.org/hig/" target="_blank" rel="noreferrer">GNOME HIG</a>. Lesson geometry inspired by Sonic Wave Infinity’s ending sequence. Lesson artwork is original; no game assets or music are included.</p>
+      <p>Workstation, camera choreography, screen framing, and outer interface adapted from <a href="https://github.com/henryjeff/portfolio-website" target="_blank" rel="noreferrer">Henry Heffernan’s portfolio</a> under the MIT license. Computer model by Mickael Boitte; environment models by Sean Nicolas; textures by Henry Heffernan. Desktop informed by the <a href="https://developer.gnome.org/hig/" target="_blank" rel="noreferrer">GNOME HIG</a>. Lesson geometry inspired by Sonic Wave Infinity’s ending sequence. Lesson artwork is original; no Geometry Dash assets or music are included.</p>
       <p className="entry-info-small">IBM Plex fonts · Lucide icons · <a href="/licenses.txt" target="_blank" rel="noreferrer">Licenses & acknowledgments</a></p>
     </div>
   </div>;
@@ -37,7 +37,7 @@ export default function StartGate({ onStart, onSkip, ready = true }: { onStart: 
   return <motion.div className="entry-shell" initial={false} exit={{ opacity: 0, scale: reduce ? 1 : 1.1 }} transition={{ duration: reduce ? 0 : 0.2, ease: "easeInOut" }} inert={!isPresent} aria-hidden={!isPresent}>
     <section className="entry-center" aria-labelledby="entry-title">
       <div className="entry-dialog">
-        <h1 id="entry-title">Operating Systems · WaveOS</h1>
+        <h1 id="entry-title">Operating Systems · opitlcalOS</h1>
         <p>Interactive learning session</p>
         <p className="entry-status" role="status">{ready ? "Click start to begin" : "Loading workstation…"} <span className="computer-cursor" aria-hidden="true" /></p>
         <button className="entry-start" onClick={onStart} disabled={!ready} autoFocus>START</button>

@@ -13,6 +13,7 @@ const apps = {
   settings: dynamic(() => import("@/components/apps/SettingsApp"), { loading: Loading }),
   about: dynamic(() => import("@/components/apps/AboutApp"), { loading: Loading }),
   software: dynamic(() => import("@/components/apps/SoftwareApp"), { loading: Loading }),
+  runner: dynamic(() => import("@/components/apps/RunnerApp"), { loading: Loading }),
 } satisfies Record<AppId, React.ComponentType>;
 
 function AppWindow({ win, focused, viewport }: { win: WindowState; focused: boolean; viewport: { width: number; height: number } }) {

@@ -12,6 +12,7 @@ const descriptions: Record<AppId, string> = {
   settings: "Make this workstation your own",
   about: "Meet your operating system",
   software: "A small, opinionated app collection",
+  runner: "Jump, duck, and beat your best distance",
 };
 
 export default function Activities({ onClose }: { onClose: () => void }) {

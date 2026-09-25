@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Pinned, unmodified Chromium engine; our adapter is linted separately.
+    "public/games/runner/engine.js",
   ]),
 ]);
 
