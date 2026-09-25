@@ -2,6 +2,7 @@
 
 import { Info, Volume2, VolumeX, X } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
+import { motion, useIsPresent, useReducedMotion } from "motion/react";
 import { useSystemStore } from "@/store/system";
 import { useDialogFocus } from "@/lib/use-dialog-focus";
 import { playTone } from "@/lib/audio";
@@ -27,9 +28,13 @@ function AboutExperience({ onClose }: { onClose: () => void }) {
 export default function StartGate({ onStart, onSkip, ready = true }: { onStart: () => void; onSkip: () => void; ready?: boolean }) {
   const muted = useSystemStore((s) => s.muted);
   const reducedMotion = useSystemStore((s) => s.reducedMotion);
+  const motionPaused = useSystemStore((s) => s.motionPaused);
+  const systemReducedMotion = useReducedMotion();
+  const isPresent = useIsPresent();
+  const reduce = reducedMotion || systemReducedMotion || motionPaused;
   const [info, setInfo] = useState(false);
   const closeInfo = useCallback(() => setInfo(false), []);
-  return <div className="entry-shell">
+  return <motion.div className="entry-shell" initial={false} exit={{ opacity: 0, scale: reduce ? 1 : 1.1 }} transition={{ duration: reduce ? 0 : 0.2, ease: "easeInOut" }} inert={!isPresent} aria-hidden={!isPresent}>
     <section className="entry-center" aria-labelledby="entry-title">
       <div className="entry-dialog">
         <h1 id="entry-title">Operating Systems · WaveOS</h1>
@@ -44,5 +49,5 @@ export default function StartGate({ onStart, onSkip, ready = true }: { onStart: 
       <div className="entry-preferences"><button className="entry-motion-control" onClick={() => useSystemStore.getState().setReducedMotion(!reducedMotion)} aria-pressed={reducedMotion}><span className={`entry-switch ${reducedMotion ? "is-on" : ""}`} />Reduce motion</button><button className="entry-sound" aria-label={muted ? "Enable sound" : "Mute sound"} title={muted ? "Sound off" : "Sound on"} onClick={() => { useSystemStore.getState().setMuted(!muted); if (muted) playTone(); }}>{muted ? <VolumeX size={18} /> : <Volume2 size={18} />}</button></div>
     </footer>
     {info && <AboutExperience onClose={closeInfo} />}
-  </div>;
+  </motion.div>;
 }

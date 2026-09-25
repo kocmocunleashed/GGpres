@@ -16,6 +16,8 @@ export { preloadWorkstationAssets } from "./ComputerModel";
 interface WorkstationSceneProps {
   view: WorkstationView;
   onViewChange: (view: WorkstationView) => void;
+  introducing: boolean;
+  onIntroComplete: () => void;
   expanded: boolean;
   muted: boolean;
   reducedMotion: boolean;
@@ -90,11 +92,13 @@ export default function WorkstationScene(props: WorkstationSceneProps) {
   }, [failed, onFallback]);
 
   function sceneClick() {
+    if (props.introducing) return;
     if (useRoomStore.getState().held || useRoomStore.getState().noteOpen) return;
     if (props.view === "overview") props.onViewChange("desk");
     else if (props.view === "desk") props.onViewChange("overview");
   }
   function screenClick() {
+    if (props.introducing) return;
     if (useRoomStore.getState().held || !useRoomStore.getState().powerOn) return;
     if (props.view === "desk" || props.view === "overview") props.onViewChange("monitor");
   }
@@ -125,7 +129,7 @@ export default function WorkstationScene(props: WorkstationSceneProps) {
               <Suspense fallback={null}>
                 <ComputerModel onClick={sceneClick} onScreenActivate={screenClick} onScreenHover={screenHover} onReady={handleAssetsReady} paused={paused} interactive={!noteOpen && (props.view === "desk" || props.view === "room" || props.view === "orbit")} />
               </Suspense>
-              <CameraRig view={props.view} reducedMotion={shouldReduceMotion} motionPaused={props.motionPaused} expanded={expanded} interactionLocked={held || noteOpen} />
+              <CameraRig view={props.view} onIntroComplete={props.onIntroComplete} reducedMotion={shouldReduceMotion} motionPaused={props.motionPaused} expanded={expanded} interactionLocked={held || noteOpen} />
               <ProjectScreen projectionRef={projectionRef} expanded={expanded} />
             </Canvas>
           )}

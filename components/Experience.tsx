@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Camera, Expand, Hand, MousePointer2, Volume2, VolumeX } from "lucide-react";
-import { useReducedMotion } from "motion/react";
+import { AnimatePresence, useReducedMotion } from "motion/react";
 import StartGate from "@/components/entry/StartGate";
 import { useSystemStore } from "@/store/system";
 import { playTone } from "@/lib/audio";
@@ -45,6 +45,7 @@ function PourClock() {
 export default function Experience() {
   const [started, setStarted] = useState(false);
   const [ready, setReady] = useState(false);
+  const [introducing, setIntroducing] = useState(false);
   const [view, setView] = useState<WorkstationView>("loading");
   const [expanded, setExpanded] = useState(false);
   const [presenting, setPresenting] = useState(false);
@@ -55,8 +56,10 @@ export default function Experience() {
   const systemReduced = useReducedMotion();
   const powerOn = useRoomStore((state) => state.powerOn);
   const handleReady = useCallback(() => setReady(true), []);
+  const handleIntroComplete = useCallback(() => setIntroducing(false), []);
   const handleFallback = useCallback(() => {
     useRoomStore.getState().cleanUp();
+    setIntroducing(false);
     setGraphicsFallback(true);
   }, []);
 
@@ -75,6 +78,7 @@ export default function Experience() {
     } else if (message.type === "restart") {
       useRoomStore.getState().reset();
       setStarted(false);
+      setIntroducing(false);
       setExpanded(false);
       setPresenting(false);
       setView("loading");
@@ -101,7 +105,7 @@ export default function Experience() {
     return () => window.removeEventListener("keydown", keydown);
   }, [started, expanded, presenting, view]);
 
-  function start() { setStarted(true); setView("overview"); }
+  function start() { setIntroducing(!graphicsFallback); setStarted(true); setView("overview"); }
   function skip() { setStarted(true); setView("monitor"); setExpanded(true); }
   function toggleSound() { useSystemStore.getState().setMuted(!muted); if (muted) playTone(); }
   function leaveRoom() {
@@ -111,11 +115,13 @@ export default function Experience() {
     setView("desk");
   }
 
-  return <main className="experience" data-reduced-motion={reducedMotion || !!systemReduced} data-motion-paused={motionPaused} data-computer-view={view}>
+  return <main className="experience" data-reduced-motion={reducedMotion || !!systemReduced} data-motion-paused={motionPaused} data-computer-view={view} data-introducing={introducing}>
     <PourClock />
-    <Workstation view={view} onViewChange={setView} expanded={expanded || presenting || graphicsFallback} muted={muted} reducedMotion={reducedMotion} motionPaused={motionPaused} onReady={handleReady} onFallback={handleFallback} onDesktopMessage={handleDesktopMessage} />
-    {!started && <StartGate onStart={start} onSkip={skip} ready={ready} />}
-    {started && !expanded && !presenting && !graphicsFallback && <>
+    <Workstation view={view} onViewChange={setView} introducing={introducing} onIntroComplete={handleIntroComplete} expanded={expanded || presenting || graphicsFallback} muted={muted} reducedMotion={reducedMotion} motionPaused={motionPaused} onReady={handleReady} onFallback={handleFallback} onDesktopMessage={handleDesktopMessage} />
+    <AnimatePresence mode="sync">
+      {!started && <StartGate key="start" onStart={start} onSkip={skip} ready={ready} />}
+    </AnimatePresence>
+    {started && !introducing && !expanded && !presenting && !graphicsFallback && <>
       {(view === "desk" || view === "orbit" || view === "room") && <aside className="computer-info" aria-label="Workstation controls">
         <h1>Operating Systems</h1><p>WaveOS · Learning Edition</p>
         <div className="computer-info-row"><SessionClock /><button onClick={toggleSound} title={muted ? "Enable sound" : "Mute sound"} aria-label={muted ? "Enable sound" : "Mute sound"}>{muted ? <VolumeX size={17} /> : <Volume2 size={17} />}</button>{view !== "room" && <button onClick={() => setView(view === "orbit" ? "overview" : "orbit")} title={view === "orbit" ? "Return to computer" : "Free camera"} aria-label={view === "orbit" ? "Return to computer" : "Free camera"} aria-pressed={view === "orbit"}>{view === "orbit" ? <MousePointer2 size={16} /> : <Camera size={17} />}</button>}</div>
