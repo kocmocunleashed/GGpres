@@ -1,8 +1,9 @@
 "use client";
 
+import { useSystemReducedMotion } from "@/lib/use-system-reduced-motion";
 import { Info, Volume2, VolumeX, X } from "lucide-react";
 import { useCallback, useRef, useState } from "react";
-import { motion, useIsPresent, useReducedMotion } from "motion/react";
+import { motion, useIsPresent } from "motion/react";
 import { useSystemStore } from "@/store/system";
 import { useDialogFocus } from "@/lib/use-dialog-focus";
 import { playTone } from "@/lib/audio";
@@ -29,7 +30,7 @@ export default function StartGate({ onStart, onSkip, ready = true }: { onStart: 
   const muted = useSystemStore((s) => s.muted);
   const reducedMotion = useSystemStore((s) => s.reducedMotion);
   const motionPaused = useSystemStore((s) => s.motionPaused);
-  const systemReducedMotion = useReducedMotion();
+  const systemReducedMotion = useSystemReducedMotion();
   const isPresent = useIsPresent();
   const reduce = reducedMotion || systemReducedMotion || motionPaused;
   const [info, setInfo] = useState(false);

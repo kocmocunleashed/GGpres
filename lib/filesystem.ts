@@ -9,8 +9,8 @@ function lessonOutline(language: Language): string {
   const lesson = manuscript[language];
   const chapters = lesson.sections.map((section) => `${String(section.id).padStart(2, "0")}  ${section.title}`).join("\n");
   const instructions = language === "en"
-    ? "17 chapters, then 8 questions. Switch EN / MN in the presentation.\nChoose Read along for the full story and questions with answers to reveal.\n\nTry: ls /home/student/Documents\nThen: cat /home/student/Documents/notes.txt"
-    : "17 хэсгийн дараа 8 асуулт бий. Илтгэл дээр EN / MN-ээр хэлээ солино.\nУншиж дагах горимоор дэлгэрэнгүй тайлбар болон хариуг нь нээж үзэх асуултуудыг уншаарай.\n\nТуршаарай: ls /home/student/Documents\nДараа нь: cat /home/student/Documents/notes.mn.txt";
+    ? "17 chapters, then 8 questions. Choose English or Mongolian in Settings.\nChoose Read along for the full story and questions with answers to reveal.\n\nTry: ls /home/student/Documents\nThen: cat /home/student/Documents/notes.txt"
+    : "17 хэсгийн дараа 8 асуулт бий. Settings дотор English эсвэл Монгол хэлээ сонгоно.\nУншиж дагах горимоор дэлгэрэнгүй тайлбар болон хариуг нь нээж үзэх асуултуудыг уншаарай.\n\nТуршаарай: ls /home/student/Documents\nДараа нь: cat /home/student/Documents/notes.mn.txt";
   return `# ${lesson.title}\n\n${chapters}\n\n${instructions}`;
 }
 

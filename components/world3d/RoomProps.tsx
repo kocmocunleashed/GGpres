@@ -3,7 +3,8 @@
 import { useFrame, type ThreeEvent } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import { Group, Mesh, MeshBasicMaterial, Vector3 } from "three";
-import { useRoomStore } from "@/store/room";
+import { useRoomStore, type RoomObject } from "@/store/room";
+import { isWorkstationClick } from "@/lib/workstation-interaction";
 import CoffeePour, { POUR_POINTS } from "./CoffeePour";
 import CoffeeSteam from "./CoffeeSteam";
 
@@ -12,7 +13,6 @@ const MUG_REST = MUG_HOME.clone().add(new Vector3(0, 0.017, 0));
 const CHAIR_PIVOT = new Vector3(0.747, -2.304, 2.633);
 const PLANT_PIVOT = new Vector3(4.113, -3.315, -0.117);
 export interface RoomMeshes { mug: Mesh; paper: Mesh; plant: Mesh; chairSeat: Mesh; chairBase: Mesh; desk: Mesh; computer: Mesh }
-type RoomHover = "mug" | "paper" | "plant" | "pc" | "chair" | "desk";
 
 export default function RoomProps({ meshes, interactive, paused, onComputerActivate }: { meshes: RoomMeshes; interactive: boolean; paused: boolean; onComputerActivate: () => void }) {
   const mug = useRef<Group>(null);
@@ -38,27 +38,29 @@ export default function RoomProps({ meshes, interactive, paused, onComputerActiv
     return meshes;
   }, [meshes]);
 
-  function hover(event: ThreeEvent<PointerEvent>, object: RoomHover) {
+  function hover(event: ThreeEvent<PointerEvent>, object: RoomObject) {
     if (!interactive) return;
     event.stopPropagation();
     const state = useRoomStore.getState();
     state.setHovered(object);
   }
-  function leave(object: RoomHover) {
+  function leave(object: RoomObject) {
     const state = useRoomStore.getState();
     if (state.hovered === object) state.setHovered(null);
   }
-  function activate(event: ThreeEvent<MouseEvent>, object: RoomHover) {
+  function activate(event: ThreeEvent<MouseEvent>, object: RoomObject) {
     if (!interactive) return;
     event.stopPropagation();
+    if (!isWorkstationClick(event)) return;
     const state = useRoomStore.getState();
     if (object === "mug") { if (state.held) state.putDown(); else state.pickUp(); }
     else if (object === "paper") state.openNote();
     else if (object === "chair") state.swivelChair();
+    else if (object === "power") state.togglePower();
     else if (state.held) state.aim(object);
     else if (object === "pc" && state.powerOn) onComputerActivate();
   }
-  function handlers(object: RoomHover) {
+  function handlers(object: RoomObject) {
     return { onClick: (event: ThreeEvent<MouseEvent>) => activate(event, object), onPointerOver: (event: ThreeEvent<PointerEvent>) => hover(event, object), onPointerOut: () => leave(object) };
   }
 
@@ -136,7 +138,7 @@ export default function RoomProps({ meshes, interactive, paused, onComputerActiv
     </mesh>
     {/* Generous invisible hit area over the source case's small power button. */}
     <group position={[-0.7, -0.13, 0.842]}>
-      <mesh onClick={(event) => { if (!interactive) return; event.stopPropagation(); useRoomStore.getState().togglePower(); }} onPointerOver={(event) => hover(event, "pc")} onPointerOut={() => leave("pc")}>
+      <mesh {...handlers("power")}>
         <boxGeometry args={[0.18, 0.17, 0.055]} /><meshBasicMaterial transparent opacity={0} depthWrite={false} />
       </mesh>
       <mesh position={[0.085, -0.009, 0.012]}><circleGeometry args={[0.01, 12]} /><meshBasicMaterial color={wetPc ? "#91683e" : powerOn ? "#9bb890" : "#33352f"} toneMapped={false} /></mesh>

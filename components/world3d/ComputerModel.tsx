@@ -5,6 +5,7 @@ import { useFrame } from "@react-three/fiber";
 import { useEffect, useMemo, useRef } from "react";
 import { AdditiveBlending, DoubleSide, Mesh, MeshBasicMaterial, NoBlending, ShaderMaterial, SRGBColorSpace } from "three";
 import { useRoomStore } from "@/store/room";
+import { isWorkstationClick } from "@/lib/workstation-interaction";
 import RoomProps, { type RoomMeshes } from "./RoomProps";
 
 /** Actual meshes and baked-lighting setup from Henry Heffernan's MIT website.
@@ -78,6 +79,7 @@ export default function ComputerModel({ onClick, onScreenActivate, onReady, paus
 
   return <group onClick={(event) => {
     event.stopPropagation();
+    if (!isWorkstationClick(event)) return;
     const state = useRoomStore.getState();
     if (interactive && state.held) {
       state.aim(event.object.name === "monitor_base" ? "pc" : "desk");
@@ -93,6 +95,7 @@ export default function ComputerModel({ onClick, onScreenActivate, onReady, paus
     <group position={[0, 950 / 900, 255 / 900]} rotation={[-Math.PI / 60, 0, 0]}
       onClick={(event) => {
         event.stopPropagation();
+        if (!isWorkstationClick(event)) return;
         const state = useRoomStore.getState();
         if (interactive && state.held) state.aim("pc");
         else if (state.powerOn) onScreenActivate();
@@ -100,7 +103,7 @@ export default function ComputerModel({ onClick, onScreenActivate, onReady, paus
       onPointerOver={(event) => {
         event.stopPropagation();
         const state = useRoomStore.getState();
-        if (interactive && state.held) state.setHovered("pc");
+        if (interactive) state.setHovered("pc");
       }}
       onPointerOut={() => { const state = useRoomStore.getState(); if (state.hovered === "pc") state.setHovered(null); }}>
       <mesh>

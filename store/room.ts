@@ -3,7 +3,7 @@
 import { create } from "zustand";
 
 export type PourTarget = "plant" | "pc" | "desk";
-export type RoomObject = "mug" | "paper" | "plant" | "pc" | "chair" | "desk";
+export type RoomObject = "mug" | "paper" | "plant" | "pc" | "power" | "chair" | "desk";
 export type RoomState = {
   held: boolean; target: PourTarget; pouring: boolean; fill: number;
   spills: Record<PourTarget, number>; powerOn: boolean; wetPc: boolean;

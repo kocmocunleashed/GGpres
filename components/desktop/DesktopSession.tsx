@@ -1,7 +1,7 @@
 "use client";
 
+import { useSystemReducedMotion } from "@/lib/use-system-reduced-motion";
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { useReducedMotion } from "motion/react";
 import { isHostStateMessage, type DesktopMessage, type HostStateMessage } from "@/lib/desktop-bridge";
 import { playTone } from "@/lib/audio";
 import { useSystemStore } from "@/store/system";
@@ -28,7 +28,7 @@ export default function DesktopSession({ startLesson = false }: { startLesson?: 
   const lastMeaningfulFocus = useRef<HTMLElement | null>(null);
   const reducedMotion = useSystemStore((state) => state.reducedMotion);
   const motionPaused = useSystemStore((state) => state.motionPaused);
-  const systemReducedMotion = useReducedMotion();
+  const systemReducedMotion = useSystemReducedMotion();
   const powered = !embedded || host?.powered !== false;
   const active = !embedded || host?.active === true && powered;
 

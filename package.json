@@ -7,9 +7,10 @@
     "build": "bun run generate:presentation && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "bun test lib/system.test.ts lib/room.test.ts lib/runner.test.ts lib/presentation.test.ts lib/slots.test.ts",
+    "test": "bun test lib/system.test.ts lib/room.test.ts lib/runner.test.ts lib/presentation.test.ts lib/slots.test.ts lib/workstation-interaction.test.ts lib/lesson-scenes.test.ts lib/lesson-scene-layout.test.ts",
     "generate:presentation": "bun scripts/generate-presentation.ts",
-    "check:presentation": "bun scripts/generate-presentation.ts --check"
+    "check:presentation": "bun scripts/generate-presentation.ts --check",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",
@@ -25,6 +26,7 @@
     "zustand": "^5.0.15"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",

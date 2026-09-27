@@ -1,9 +1,10 @@
 "use client";
 
+import { useSystemReducedMotion } from "@/lib/use-system-reduced-motion";
 import dynamic from "next/dynamic";
 import { useCallback, useEffect, useState } from "react";
 import { ArrowLeft, Camera, Expand, Hand, MousePointer2, Volume2, VolumeX } from "lucide-react";
-import { AnimatePresence, useReducedMotion } from "motion/react";
+import { AnimatePresence } from "motion/react";
 import StartGate from "@/components/entry/StartGate";
 import { useSystemStore } from "@/store/system";
 import { playTone } from "@/lib/audio";
@@ -54,7 +55,7 @@ export default function Experience() {
   const muted = useSystemStore((s) => s.muted);
   const reducedMotion = useSystemStore((s) => s.reducedMotion);
   const motionPaused = useSystemStore((s) => s.motionPaused);
-  const systemReduced = useReducedMotion();
+  const systemReduced = useSystemReducedMotion();
   const powerOn = useRoomStore((state) => state.powerOn);
   const handleReady = useCallback(() => setReady(true), []);
   const handleIntroComplete = useCallback(() => setIntroducing(false), []);

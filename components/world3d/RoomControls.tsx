@@ -7,14 +7,6 @@ import { useRoomStore } from "@/store/room";
 import "./room-controls.css";
 
 const targetLabels = { plant: "Plant", pc: "PC", desk: "Desk" } as const;
-const objectLabels = {
-  mug: "Mug · click to pick up",
-  paper: "Note · click to read",
-  plant: "Plant · aim the mug here",
-  pc: "Computer · power button",
-  chair: "Chair · click to swivel",
-  desk: "Desk · aim the mug here",
-} as const;
 
 function DeskNote() {
   const ref = useRef<HTMLDivElement>(null);
@@ -37,6 +29,15 @@ function DeskNote() {
 
 export default function RoomControls({ onExit }: { onExit: () => void; muted?: boolean }) {
   const room = useRoomStore();
+  const objectLabels = {
+    mug: room.held ? "Mug · click to put down" : "Mug · click to pick up",
+    paper: "Note · click to read",
+    plant: room.held ? "Plant · click to aim the mug" : "Plant · pick up the mug to pour",
+    pc: room.held ? "Computer · click to aim the mug" : room.powerOn ? "Computer · click to enter" : "Computer · use the power button to switch on",
+    power: room.wetPc ? "Power button · clean up the spill first" : room.powerOn ? "Power button · click to switch off" : "Power button · click to switch on",
+    chair: "Chair · click to swivel",
+    desk: room.held ? "Desk · click to aim the mug" : "Desk · pick up the mug to pour",
+  };
   const heldInputs = useRef(new Set<string>());
   const exitRef = useRef(onExit);
   const noteTrigger = useRef<HTMLButtonElement>(null);

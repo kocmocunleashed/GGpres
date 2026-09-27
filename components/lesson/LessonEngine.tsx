@@ -1,21 +1,20 @@
 'use client';
 
+import { useSystemReducedMotion } from "@/lib/use-system-reduced-motion";
 import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, Check, Expand, List, Monitor, RotateCcw, X } from 'lucide-react';
-import { useReducedMotion } from 'motion/react';
 import { manuscript, slideCopy } from '@/lib/presentation-data';
 import { usePresentationLanguage } from '@/lib/presentation-language';
 import { usePresentationGraphics } from '@/lib/presentation-graphics';
 import { useSystemStore, type AppId } from '@/store/system';
-import ChapterVisual from './ChapterVisual';
 import Manuscript from './Manuscript';
 import GraphicsToggle from './GraphicsToggle';
 import './presentation.css';
 
 function SceneLoading() {
   const [language] = usePresentationLanguage();
-  return <div className="p-scene-loading" role="status">{language === 'en' ? 'Loading 3D diagram…' : '3D үзүүлэн ачаалж байна…'}</div>;
+  return <div className="p-scene-loading" role="status">{language === 'en' ? 'Loading example…' : 'Жишээ ачаалж байна…'}</div>;
 }
 
 const ChapterScene3D = dynamic(() => import('./ChapterScene3D'), { ssr: false, loading: SceneLoading });
@@ -33,7 +32,7 @@ export default function LessonEngine() {
   const index = useSystemStore(s => s.lessonIndex);
   const reducedMotion = useSystemStore(s => s.reducedMotion);
   const motionPaused = useSystemStore(s => s.motionPaused);
-  const systemReduced = useReducedMotion();
+  const systemReduced = useSystemReducedMotion();
   const [reading, setReading] = useState(false);
   const [modal, setModal] = useState<'contents' | 'sources' | null>(null);
   const [reset, setReset] = useState(0);
@@ -125,7 +124,7 @@ export default function LessonEngine() {
         {finished ? <section className="p-finished"><span className="p-kicker"><Check size={16} />{t.complete}</span><h1>{t.done}</h1><p>{t.learn}</p><div className="p-finish-meter">{revealed.length}<span>/ 8</span><small>{t.checked}</small></div><div className="p-finish-actions"><button className="p-solid-button" onClick={leave}>{t.explore}<ArrowRight size={19} /></button><button className="p-text-button" onClick={restart}><RotateCcw size={17} />{t.again}</button></div></section> : isQuiz && question ? <section className="p-quiz"><div className="p-quiz-marker"><span>{t.think}</span><strong>{String(quizIndex + 1).padStart(2, '0')}<small>/08</small></strong></div><div className="p-quiz-main"><span className="p-kicker">{t.quiz}</span><h1>{question.question}</h1><p className="p-quiz-instruction">{t.note}</p><button className="p-solid-button" aria-expanded={revealed.includes(quizIndex)} aria-controls="quiz-answer" onClick={() => setRevealed(values => values.includes(quizIndex) ? values.filter(i => i !== quizIndex) : [...values, quizIndex])}>{revealed.includes(quizIndex) ? t.hide : t.show}<ArrowRight size={18} /></button><div id="quiz-answer" className="p-quiz-answer" hidden={!revealed.includes(quizIndex)}><span className="p-kicker">{t.answer}</span><p>{question.answer}</p></div></div></section> : <>
           <section className={`p-composition p-composition-${current + 1}`}>
             <div className="p-slide-copy"><span className="p-kicker"><span className="p-chapter-number">{String(current + 1).padStart(2, '0')}</span>{copy.eyebrow}</span><h1>{copy.title}</h1><p className="p-summary">{copy.summary}</p><div className="p-takeaway"><span>{t.important}</span><p>{copy.takeaway}</p></div></div>
-            <div className="p-illustration">{graphicsEnabled ? <><ChapterScene3D chapter={current + 1} language={language} paused={!!systemReduced || reducedMotion || motionPaused || !!modal || reading} /><details className="p-try-example" key={current} open={current === 15}><summary>{language === 'en' ? 'Try the example' : 'Жишээг турших'}</summary><ChapterVisual chapter={current + 1} language={language} onDemo={demo} /></details></> : <ChapterVisual key={current} chapter={current + 1} language={language} onDemo={demo} />}</div>
+            <div className="p-illustration"><ChapterScene3D chapter={current + 1} language={language} enabled={graphicsEnabled} paused={!!systemReduced || reducedMotion || motionPaused || !!modal || reading} onDemo={demo} /></div>
           </section>
           <div className="p-slide-baseline"><span>{section.title}</span><button className="p-text-button" onClick={() => setReset(value => value + 1)}><RotateCcw size={13} />{t.reset}</button></div>
         </>}

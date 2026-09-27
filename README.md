@@ -23,8 +23,8 @@ All models, wallpapers, fonts, and synthesized sounds are served locally. No ext
 ## Presentation
 
 - Choose **Settings → Language / Хэл → EN / Монгол** on the desktop to change the lesson and Pocket Slots language. The language control appears only in Settings. The browser remembers your choice when local storage is available; return to the lesson to resume the same chapter.
-- **3D diagrams** in the lesson header or Settings turns the chapter's Three.js illustration on or off. The browser remembers the choice. Turning it off returns to the interactive 2D diagram and removes the lesson's WebGL canvas.
-- With 3D enabled, open **Try the example** below the illustration to use the chapter's interactive exercise. The Files/Terminal experiment opens automatically. Labels and explanations remain readable when motion is paused; **Reduce motion** and **Pause ambient motion** keep the 3D scenes still.
+- **3D diagrams** in the lesson header or Settings turns the chapter's Three.js illustration on or off. The browser remembers the choice. Turning it off removes the canvas and shows the same objects and outcome as readable facts. The example keeps its state.
+- Each illustration has its own controls: save, switch off power, advance a CPU turn, choose a permission, or upload a copy. Nothing transfers automatically. The controls, geometry, labels, and text fallback share one state. Chapter 16 includes buttons to open Files and Terminal.
 - Choose **Read along** to read the full manuscript for the current chapter. Reading checks and the final eight questions keep answers hidden until you reveal them.
 - Open **Chapters** to jump to any of the 17 sections or the review questions. **Sources & notes** contains the introduction, teaching notes, and source links; individual claims link to their sources in the narration.
 - `→` / `Space`: next page; `←`: previous page; `R`: switch between slides and Read along; `Esc`: return to the desktop. Space activates a focused button or answer control instead of advancing the page.
@@ -90,7 +90,7 @@ CPU percentages and memory measurements are illustrative simulation data, not re
 - `components/apps/`: Lesson, Files, Terminal, System Monitor, Settings, About, Software, and Dino Runner.
 - `app/presentation/`: compatibility entry to the same physical workstation.
 - `components/lesson/`: presentation controls, chapter illustrations, language toggle, and safe manuscript renderer.
-- `components/lesson/ChapterScene3D.tsx`: local Three.js chapter diagrams. The renderer is loaded only when enabled, reuses its canvas between chapters, and stops continuous rendering while still or out of view.
+- `components/lesson/ChapterScene3D.tsx`: controls and accessible explanations for the 17 examples. `lib/lesson-scenes.ts` defines their states; `components/lesson/scene3d/` renders distinct objects with direct labels. The renderer loads only when enabled, keeps one canvas across chapters, and renders on demand.
 - `store/system.ts`: windows, processes, allocations, settings, notifications, and lesson progress.
 - `store/room.ts`: mug contents, pour targets, spills, chair rotation, note, and simulated power. Pouring uses a bounded clock and lightweight procedural geometry, without a physics engine.
 - `lib/filesystem.ts`, `lib/terminal.ts`: isolated virtual filesystem and educational command interpreter.
@@ -121,6 +121,8 @@ Tests cover manuscript parity in both languages, all 17 sections and eight quiz 
 Pocket Slots tests check all 216 outcomes, credit accounting, duplicate clicks, stale animation callbacks, empty balances, and reset behavior. Open it from the dock, Software, the app menu, or the terminal command `slots`. A spin costs one of 30 free demo credits; the visible return table explains every result. The game shares the EN/Монгол preference. Its Spin button works with Enter or Space, and Reset starts a fresh round.
 
 `bun run check:presentation` fails if the generated content differs from the Markdown sources. After editing either manuscript, run `bun run generate:presentation`; `dev` and `build` also regenerate it automatically.
+
+Run `bun run test:e2e` against a running app (`E2E_BASE_URL` selects the deployment; `E2E_CHROMIUM_PATH` can select an installed Chromium). Screenshots and failure traces go to `/tmp/present-e2e-results`. The [3D audit](docs/3d-audit.md) records the replacement and verification evidence.
 
 Browser verification should cover all 25 pages in both languages, language retention, narration and answer reveals, chapter navigation, source links, keyboard controls, fullscreen exit, Files/Terminal return and resume, narrow layouts, and reduced motion. Workstation checks should cover entry, room interactions, spill recovery, window minimize/restore, and the additional process demonstration.
 
