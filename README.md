@@ -23,13 +23,17 @@ All models, wallpapers, fonts, and synthesized sounds are served locally. No ext
 ## Presentation
 
 - Choose **Settings → Language / Хэл → EN / Монгол** on the desktop to change the lesson and Pocket Slots language. The language control appears only in Settings. The browser remembers your choice when local storage is available; return to the lesson to resume the same chapter.
+- **3D diagrams** in the lesson header or Settings turns the chapter's Three.js illustration on or off. The browser remembers the choice. Turning it off returns to the interactive 2D diagram and removes the lesson's WebGL canvas.
+- With 3D enabled, open **Try the example** below the illustration to use the chapter's interactive exercise. The Files/Terminal experiment opens automatically. Labels and explanations remain readable when motion is paused; **Reduce motion** and **Pause ambient motion** keep the 3D scenes still.
 - Choose **Read along** to read the full manuscript for the current chapter. Reading checks and the final eight questions keep answers hidden until you reveal them.
 - Open **Chapters** to jump to any of the 17 sections or the review questions. **Sources & notes** contains the introduction, teaching notes, and source links; individual claims link to their sources in the narration.
 - `→` / `Space`: next page; `←`: previous page; `R`: switch between slides and Read along; `Esc`: return to the desktop. Space activates a focused button or answer control instead of advancing the page.
 - **Reset illustration** restarts the current diagram. Browser fullscreen is optional; the presentation already fills its view.
 - The chapter 16 experiment opens Files or Terminal on the simulated desktop. Resume the presentation from the lesson app to return to the same chapter.
 
-The narration starts with familiar actions, explains each technical term, and offers breaks after chapters 5 and 10. It favors Linux and Fedora as places to explore while explaining their limits. It does not require installing an operating system.
+The narration starts with familiar actions, explains each technical term, and offers breaks after chapters 5 and 10. Shorter sentences explain one step at a time: opening an app, sharing CPU time, saving a file, and sending a copy online. The same examples carry through the English and Mongolian versions. It favors Linux and Fedora as places to explore while explaining their limits. It does not require installing an operating system.
+
+The prose review follows the [Department for Education's plain-language guidance](https://design.education.gov.uk/content-design/plain-language): explain technical terms when they first appear and choose words for the reader's level of knowledge. The 3D diagrams show the chapter's parts and relationships; they are teaching models, not measurements of real hardware or data traffic.
 
 ## Explore the workstation
 
@@ -86,12 +90,14 @@ CPU percentages and memory measurements are illustrative simulation data, not re
 - `components/apps/`: Lesson, Files, Terminal, System Monitor, Settings, About, Software, and Dino Runner.
 - `app/presentation/`: compatibility entry to the same physical workstation.
 - `components/lesson/`: presentation controls, chapter illustrations, language toggle, and safe manuscript renderer.
+- `components/lesson/ChapterScene3D.tsx`: local Three.js chapter diagrams. The renderer is loaded only when enabled, reuses its canvas between chapters, and stops continuous rendering while still or out of view.
 - `store/system.ts`: windows, processes, allocations, settings, notifications, and lesson progress.
 - `store/room.ts`: mug contents, pour targets, spills, chair rotation, note, and simulated power. Pouring uses a bounded clock and lightweight procedural geometry, without a physics engine.
 - `lib/filesystem.ts`, `lib/terminal.ts`: isolated virtual filesystem and educational command interpreter.
 - `docs/presentation-manuscript.md`, `docs/presentation-manuscript.mn.md`: the complete source manuscripts, review questions, and presenter notes.
 - `scripts/generate-presentation.ts`, `lib/presentation-manuscript.generated.json`: manuscript extraction, run automatically before development and production builds.
 - `lib/presentation-data.ts`, `lib/presentation-language.ts`: concise slide copy and the shared English/Mongolian preference.
+- `lib/presentation-graphics.ts`: the remembered 3D choice shared by the lesson and Settings, with a session fallback when browser storage is blocked.
 - `public/games/runner/`: pinned BSD-licensed Chromium runner, local sprites, and an isolated lifecycle adapter.
 
 Next.js App Router, React, TypeScript, Zustand, React Three Fiber, Three.js, and locally hosted IBM Plex fonts. The desktop and all lesson text use DOM; WebGL is limited to the physical workstation. Particles are capped and procedural. The workstation and local `/desktop` iframe load behind the entry gate. The same iframe remains mounted through camera changes and expansion; WebGL pauses while the expanded desktop or lesson is in use. The desktop has its own viewport, so windows and responsive layouts continue to behave normally. Parent/frame messages validate both source window and origin.

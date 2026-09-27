@@ -1,26 +1,38 @@
 'use client';
 
+import dynamic from 'next/dynamic';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { ArrowLeft, ArrowRight, BookOpen, Check, Expand, List, Monitor, RotateCcw, X } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
 import { manuscript, slideCopy } from '@/lib/presentation-data';
 import { usePresentationLanguage } from '@/lib/presentation-language';
+import { usePresentationGraphics } from '@/lib/presentation-graphics';
 import { useSystemStore, type AppId } from '@/store/system';
 import ChapterVisual from './ChapterVisual';
 import Manuscript from './Manuscript';
+import GraphicsToggle from './GraphicsToggle';
 import './presentation.css';
 
+function SceneLoading() {
+  const [language] = usePresentationLanguage();
+  return <div className="p-scene-loading" role="status">{language === 'en' ? 'Loading 3D diagram…' : '3D үзүүлэн ачаалж байна…'}</div>;
+}
+
+const ChapterScene3D = dynamic(() => import('./ChapterScene3D'), { ssr: false, loading: SceneLoading });
+
 const labels = {
-  en: { lesson: 'A field guide to your computer', chapters: 'Chapters', read: 'Read along', slides: 'Slides', back: 'Previous', next: 'Next chapter', nextQuestion: 'Next question', exit: 'Back to desktop', fullscreen: 'Toggle fullscreen', reset: 'Reset illustration', sources: 'Sources & teaching notes', chapter: 'Chapter', question: 'Question', think: 'A little check-in.', quiz: 'What stayed with you?', show: 'Reveal answer', hide: 'Hide answer', finish: 'Finish lesson', done: 'You know what is underneath.', complete: 'Lesson complete', explore: 'Explore the desktop', again: 'Start again', answer: 'One way to explain it', checked: 'answers explored', key: '← → to move · R to read · Esc for desktop', contents: 'The whole story.', contentsIntro: 'Follow the blue cat from your first click to the information you share.', learn: 'Your computer, your choices', startQuiz: 'Check what you learned', note: 'Take a moment. Try explaining it in your own words before revealing the answer.', verified: 'Source notes · checked 27 September 2026', unavailable: 'Fullscreen is unavailable here. The presentation still fills this view.', important: 'The idea to keep', reading: 'The full story', about: 'Before you begin' },
-  mn: { lesson: 'Компьютерээ ойлгох хөтөч', chapters: 'Хэсгүүд', read: 'Уншиж дагах', slides: 'Слайд', back: 'Өмнөх', next: 'Дараах хэсэг', nextQuestion: 'Дараах асуулт', exit: 'Desktop руу буцах', fullscreen: 'Бүтэн дэлгэц', reset: 'Үзүүлэнг дахин эхлүүлэх', sources: 'Эх сурвалж ба багшийн тэмдэглэл', chapter: 'Хэсэг', question: 'Асуулт', think: 'Түр бодоод үзье.', quiz: 'Юу ойлгож авсан бэ?', show: 'Хариуг харах', hide: 'Хариуг нуух', finish: 'Хичээл дуусгах', done: 'Цаана нь юу байдгийг мэддэг боллоо.', complete: 'Хичээл дууслаа', explore: 'Desktop-ийг судлах', again: 'Дахин эхлэх', answer: 'Ингэж тайлбарлаж болно', checked: 'хариултыг үзлээ', key: '← → шилжих · R унших · Esc desktop', contents: 'Бүх түүх.', contentsIntro: 'Эхний даралтаас мэдээллээ хуваалцах хүртэл цэнхэр муурыг дагая.', learn: 'Чиний компьютер, чиний сонголт', startQuiz: 'Сурснаа шалгаарай', note: 'Хариуг харахаасаа өмнө өөрийн үгээр тайлбарлаж үзээрэй.', verified: 'Эх сурвалж · 2026.09.27-нд шалгасан', unavailable: 'Бүтэн дэлгэцийн горим энд боломжгүй байна. Илтгэл энэ цонхыг дүүргэж харагдана.', important: 'Санаж үлдэх санаа', reading: 'Дэлгэрэнгүй тайлбар', about: 'Эхлэхийн өмнө' },
+  en: { lesson: 'How your computer works', chapters: 'Chapters', read: 'Read along', slides: 'Slides', back: 'Previous', next: 'Next chapter', nextQuestion: 'Next question', exit: 'Back to desktop', fullscreen: 'Toggle fullscreen', reset: 'Reset illustration', sources: 'Sources & teaching notes', chapter: 'Chapter', question: 'Question', think: 'Check your understanding', quiz: 'Explain it in your own words', show: 'Reveal answer', hide: 'Hide answer', finish: 'Finish lesson', done: 'You finished the lesson.', complete: 'Lesson complete', explore: 'Explore the desktop', again: 'Start again', answer: 'One way to explain it', checked: 'answers explored', key: '← → to move · R to read · Esc for desktop', contents: 'All chapters', contentsIntro: 'Start with drawing and saving a picture. Then explore Linux, Fedora, and who can see your information.', learn: 'Your computer, your choices', startQuiz: 'Check what you learned', note: 'Take a moment. Try explaining it in your own words before revealing the answer.', verified: 'Source notes · checked 27 September 2026', unavailable: 'Fullscreen is unavailable here. The presentation still fills this view.', important: 'Remember', reading: 'Full explanation', about: 'Before you begin' },
+  mn: { lesson: 'Компьютерээ ойлгох хөтөч', chapters: 'Хэсгүүд', read: 'Уншиж дагах', slides: 'Слайд', back: 'Өмнөх', next: 'Дараах хэсэг', nextQuestion: 'Дараах асуулт', exit: 'Desktop руу буцах', fullscreen: 'Бүтэн дэлгэц', reset: 'Үзүүлэнг дахин эхлүүлэх', sources: 'Эх сурвалж ба багшийн тэмдэглэл', chapter: 'Хэсэг', question: 'Асуулт', think: 'Ойлгосноо шалгая', quiz: 'Өөрийн үгээр тайлбарлаарай', show: 'Хариуг харах', hide: 'Хариуг нуух', finish: 'Хичээл дуусгах', done: 'Чи хичээлээ дуусгалаа.', complete: 'Хичээл дууслаа', explore: 'Desktop-ийг судлах', again: 'Дахин эхлэх', answer: 'Ингэж тайлбарлаж болно', checked: 'хариултыг үзлээ', key: '← → шилжих · R унших · Esc desktop', contents: 'Бүх хэсэг', contentsIntro: 'Зураг зурж, хадгалахаас эхэлье. Дараа нь Linux, Fedora болон мэдээллийг чинь хэн харж болохыг үзнэ.', learn: 'Чиний компьютер, чиний сонголт', startQuiz: 'Сурснаа шалгаарай', note: 'Хариуг харахаасаа өмнө өөрийн үгээр тайлбарлаж үзээрэй.', verified: 'Эх сурвалж · 2026.09.27-нд шалгасан', unavailable: 'Бүтэн дэлгэцийн горим энд боломжгүй байна. Илтгэл энэ цонхыг дүүргэж харагдана.', important: 'Санаж үлдэх санаа', reading: 'Дэлгэрэнгүй тайлбар', about: 'Эхлэхийн өмнө' },
 };
 
 export default function LessonEngine() {
   const [language] = usePresentationLanguage();
+  const [graphicsEnabled] = usePresentationGraphics();
   const t = labels[language];
   const data = manuscript[language];
   const index = useSystemStore(s => s.lessonIndex);
   const reducedMotion = useSystemStore(s => s.reducedMotion);
+  const motionPaused = useSystemStore(s => s.motionPaused);
   const systemReduced = useReducedMotion();
   const [reading, setReading] = useState(false);
   const [modal, setModal] = useState<'contents' | 'sources' | null>(null);
@@ -98,10 +110,10 @@ export default function LessonEngine() {
     useSystemStore.getState().setLessonComplete(false); goTo(0);
   }
 
-  return <div ref={root} tabIndex={-1} lang={language} className="p-engine" data-reading={reading} data-reduced={!!systemReduced || reducedMotion} data-chapter={isQuiz ? 'quiz' : current + 1} aria-label={t.learn}>
+  return <div ref={root} tabIndex={-1} lang={language} className="p-engine" data-reading={reading} data-reduced={!!systemReduced || reducedMotion || motionPaused} data-graphics={graphicsEnabled} data-chapter={isQuiz ? 'quiz' : current + 1} aria-label={t.learn}>
     <header className="p-header">
       <button className="p-brand" onClick={leave} aria-label={t.exit}><span className="p-brand-symbol" aria-hidden="true">o.</span><span>opitlcal<span className="p-brand-os">OS</span><small>{t.lesson}</small></span></button>
-      <div className="p-header-right"><button className="p-icon-button" onClick={leave} aria-label={t.exit} title={t.exit}><X size={21} /></button></div>
+      <div className="p-header-right"><GraphicsToggle language={language} /><button className="p-icon-button" onClick={leave} aria-label={t.exit} title={t.exit}><X size={21} /></button></div>
     </header>
     <div className="p-toolbar">
       <button className="p-text-button" onClick={() => openModal('contents')}><List size={17} />{t.chapters}<span className="p-small-count">17</span></button>
@@ -109,11 +121,11 @@ export default function LessonEngine() {
       <button className="p-icon-button p-fullscreen" onClick={toggleFullscreen} aria-label={t.fullscreen} title={t.fullscreen}><Expand size={17} /></button>
     </div>
     <div className="p-body" ref={stage} tabIndex={-1}>
-      <div className="p-slide" key={`${current}-${reset}`}>
+      <div className="p-slide" key={reset}>
         {finished ? <section className="p-finished"><span className="p-kicker"><Check size={16} />{t.complete}</span><h1>{t.done}</h1><p>{t.learn}</p><div className="p-finish-meter">{revealed.length}<span>/ 8</span><small>{t.checked}</small></div><div className="p-finish-actions"><button className="p-solid-button" onClick={leave}>{t.explore}<ArrowRight size={19} /></button><button className="p-text-button" onClick={restart}><RotateCcw size={17} />{t.again}</button></div></section> : isQuiz && question ? <section className="p-quiz"><div className="p-quiz-marker"><span>{t.think}</span><strong>{String(quizIndex + 1).padStart(2, '0')}<small>/08</small></strong></div><div className="p-quiz-main"><span className="p-kicker">{t.quiz}</span><h1>{question.question}</h1><p className="p-quiz-instruction">{t.note}</p><button className="p-solid-button" aria-expanded={revealed.includes(quizIndex)} aria-controls="quiz-answer" onClick={() => setRevealed(values => values.includes(quizIndex) ? values.filter(i => i !== quizIndex) : [...values, quizIndex])}>{revealed.includes(quizIndex) ? t.hide : t.show}<ArrowRight size={18} /></button><div id="quiz-answer" className="p-quiz-answer" hidden={!revealed.includes(quizIndex)}><span className="p-kicker">{t.answer}</span><p>{question.answer}</p></div></div></section> : <>
           <section className={`p-composition p-composition-${current + 1}`}>
             <div className="p-slide-copy"><span className="p-kicker"><span className="p-chapter-number">{String(current + 1).padStart(2, '0')}</span>{copy.eyebrow}</span><h1>{copy.title}</h1><p className="p-summary">{copy.summary}</p><div className="p-takeaway"><span>{t.important}</span><p>{copy.takeaway}</p></div></div>
-            <div className="p-illustration"><ChapterVisual chapter={current + 1} language={language} onDemo={demo} /></div>
+            <div className="p-illustration">{graphicsEnabled ? <><ChapterScene3D chapter={current + 1} language={language} paused={!!systemReduced || reducedMotion || motionPaused || !!modal || reading} /><details className="p-try-example" key={current} open={current === 15}><summary>{language === 'en' ? 'Try the example' : 'Жишээг турших'}</summary><ChapterVisual chapter={current + 1} language={language} onDemo={demo} /></details></> : <ChapterVisual key={current} chapter={current + 1} language={language} onDemo={demo} />}</div>
           </section>
           <div className="p-slide-baseline"><span>{section.title}</span><button className="p-text-button" onClick={() => setReset(value => value + 1)}><RotateCcw size={13} />{t.reset}</button></div>
         </>}

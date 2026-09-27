@@ -1,10 +1,11 @@
 "use client";
 
-import { Check, Monitor, Moon, Volume2, Wind } from "lucide-react";
+import { Box, Check, Monitor, Moon, Volume2, Wind } from "lucide-react";
 import WaveMark from "@/components/visual/WaveMark";
 import { useSystemStore } from "@/store/system";
 import { usePresentationLanguage } from "@/lib/presentation-language";
 import LanguageToggle from "@/components/lesson/LanguageToggle";
+import { usePresentationGraphics } from "@/lib/presentation-graphics";
 
 const themes = [
   { id: "wave", name: "Original", description: "A familiar blue current" },
@@ -14,6 +15,7 @@ const themes = [
 
 export function SettingsApp() {
   const [language] = usePresentationLanguage();
+  const [graphicsEnabled, setGraphicsEnabled] = usePresentationGraphics();
   const theme = useSystemStore((state) => state.theme);
   const setTheme = useSystemStore((state) => state.setTheme);
   const muted = useSystemStore((state) => state.muted);
@@ -34,8 +36,9 @@ export function SettingsApp() {
     </label>)}</div><p className="app-theme-caption">Window colors, app controls, and wallpaper change together.</p></fieldset>
     {theme === "wave" && <section className="app-settings-section app-wallpaper-section"><h3>Wallpaper</h3><div className="app-wallpaper-options">{(["wave", "dusk"] as const).map((value) => <button type="button" key={value} className={`app-wallpaper-option ${wallpaper === value ? "is-selected" : ""}`} aria-pressed={wallpaper === value} onClick={() => setWallpaper(value)}><span className={`app-wallpaper-preview app-wallpaper-${value}`}><span />{wallpaper === value && <Check size={19} />}</span><span>{value === "wave" ? "Blue current" : "After hours"}</span></button>)}</div></section>}
     <section className="app-settings-section"><h3>Comfort & accessibility</h3><div className="app-settings-group">
+      <div className="app-setting-row"><span className="app-setting-icon"><Box size={22} /></span><div><strong>{language === "en" ? "3D diagrams" : "3D үзүүлэн"}</strong><p>{language === "en" ? "Show 3D explanations in the lesson. Turn off for simpler graphics and less battery use. Your choice is remembered." : "Хичээлд 3D тайлбар үзүүлнэ. Унтраавал энгийн зураг үлдэж, батарей бага зарцуулна. Сонголт хадгалагдана."}</p></div><button type="button" role="switch" aria-checked={graphicsEnabled} aria-label={language === "en" ? "3D diagrams" : "3D үзүүлэн"} className="app-switch" onClick={() => setGraphicsEnabled(!graphicsEnabled)}><span /></button></div>
       <div className="app-setting-row"><span className="app-setting-icon"><Wind size={22} /></span><div><strong>Reduce motion</strong><p>Gentler transitions throughout the workstation.</p></div><button type="button" role="switch" aria-checked={reducedMotion} aria-label="Reduce motion" className="app-switch" onClick={() => setReducedMotion(!reducedMotion)}><span /></button></div>
-      <div className="app-setting-row"><span className="app-setting-icon"><Moon size={21} /></span><div><strong>Pause ambient motion</strong><p>Keep lesson particles and background geometry still.</p></div><button type="button" role="switch" aria-checked={motionPaused} aria-label="Pause ambient motion" className="app-switch" onClick={() => setMotionPaused(!motionPaused)}><span /></button></div>
+      <div className="app-setting-row"><span className="app-setting-icon"><Moon size={21} /></span><div><strong>Pause ambient motion</strong><p>Keep the lesson diagrams and workstation motion still.</p></div><button type="button" role="switch" aria-checked={motionPaused} aria-label="Pause ambient motion" className="app-switch" onClick={() => setMotionPaused(!motionPaused)}><span /></button></div>
       <div className="app-setting-row"><span className="app-setting-icon"><Volume2 size={21} /></span><div><strong>Sound</strong><p>Optional audio. Everything works quietly, too.</p></div><button type="button" role="switch" aria-checked={!muted} aria-label="Sound" className="app-switch" onClick={() => setMuted(!muted)}><span /></button></div>
     </div></section>
     <div className="app-settings-note"><Monitor size={17} /><p>Made for a classroom screen. Press <kbd>Esc</kbd> during the lesson to return to your desktop.</p></div>
