@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import DesktopSession from '@/components/desktop/DesktopSession';
+import Experience from '@/components/Experience';
 
 export const metadata: Metadata = {
   title: 'Your computer, your choices — opitlcalOS',
@@ -7,5 +7,5 @@ export const metadata: Metadata = {
 };
 
 export default function PresentationPage() {
-  return <DesktopSession startLesson />;
+  return <Experience />;
 }

@@ -29,15 +29,8 @@ export default function CSS3DScreen(props: Props) {
   const iframeRef = useRef<HTMLIFrameElement | null>(null);
   const objectRef = useRef<HTMLElement | null>(null);
   const latest = useRef(props);
-  const hoverProtectedUntil = useRef(0);
 
   useLayoutEffect(() => {
-    const previous = latest.current;
-    if (props.view === "monitor" && (previous.view !== "monitor" || previous.expanded && !props.expanded)) {
-      // Camera motion and collapsing the full-size frame can move its edge
-      // beneath a stationary pointer. These are not intentional hover-outs.
-      hoverProtectedUntil.current = performance.now() + (props.reducedMotion || props.motionPaused ? 180 : 2200);
-    }
     latest.current = props;
   });
 
@@ -77,8 +70,6 @@ export default function CSS3DScreen(props: Props) {
     object.scale.setScalar(1 / 900);
     scene.add(object);
     let lastCamera: PerspectiveCamera | null = null;
-    let exitAfterDrag = false;
-    let retreatTimer: ReturnType<typeof setTimeout> | null = null;
 
     function state(): HostStateMessage {
       const current = latest.current;
@@ -95,44 +86,9 @@ export default function CSS3DScreen(props: Props) {
       if (event.data.type === "ready") { sendState(); latest.current.onReady(); }
       latest.current.onDesktopMessage(event.data);
     }
-    function clearRetreat() {
-      if (retreatTimer !== null) clearTimeout(retreatTimer);
-      retreatTimer = null;
-    }
-    function onNavigation(target: EventTarget | null) {
-      return target instanceof Element && !!target.closest(".computer-navigation");
-    }
-    function mayRetreat() {
-      return !latest.current.expanded && latest.current.view === "monitor" && performance.now() >= hoverProtectedUntil.current;
-    }
-    function scheduleRetreat() {
-      clearRetreat();
-      if (!mayRetreat()) return;
-      // Give the pointer time to cross the small gap to Back/Expand controls.
-      retreatTimer = setTimeout(() => {
-        retreatTimer = null;
-        if (mayRetreat()) latest.current.onViewChange("desk");
-      }, 320);
-    }
-    function leave(event: PointerEvent) {
-      if (event.pointerType === "touch" || !mayRetreat()) return;
-      if (onNavigation(event.relatedTarget)) { clearRetreat(); return; }
-      if (event.buttons) exitAfterDrag = true;
-      else scheduleRetreat();
-    }
-    function release(event: PointerEvent) {
-      if (exitAfterDrag && !onNavigation(event.target)) scheduleRetreat();
-      exitAfterDrag = false;
-    }
-    function enter() { exitAfterDrag = false; clearRetreat(); }
-    function navigationEnter(event: PointerEvent) {
-      if (onNavigation(event.target)) { exitAfterDrag = false; clearRetreat(); }
-    }
-    iframe.addEventListener("pointerleave", leave);
-    iframe.addEventListener("pointerenter", enter);
+    // Entering and leaving the computer are deliberate navigation actions.
+    // Moving the pointer across the frame must not change the camera view.
     iframe.addEventListener("load", sendState);
-    window.addEventListener("pointerup", release);
-    window.addEventListener("pointerover", navigationEnter, true);
     window.addEventListener("message", message);
     const observer = new ResizeObserver(resize);
     observer.observe(mount);
@@ -153,12 +109,7 @@ export default function CSS3DScreen(props: Props) {
 
     return () => {
       observer.disconnect();
-      clearRetreat();
       window.removeEventListener("message", message);
-      window.removeEventListener("pointerup", release);
-      window.removeEventListener("pointerover", navigationEnter, true);
-      iframe.removeEventListener("pointerleave", leave);
-      iframe.removeEventListener("pointerenter", enter);
       iframe.removeEventListener("load", sendState);
       projectionRef.current = null;
       iframeRef.current = null;

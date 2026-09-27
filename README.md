@@ -11,14 +11,14 @@ bun install
 bun dev
 ```
 
-Open [localhost:3000](http://localhost:3000) and press **START** for the original workstation opening and desk setup. The presentation is also available directly at [localhost:3000/presentation](http://localhost:3000/presentation). For a classroom presentation, use a production build:
+Open [localhost:3000](http://localhost:3000) to see the original desk, coffee mug, plant, and computer. Click the computer to enter its desktop, then open Operating Systems. The older `/presentation` link opens the same desk. For a classroom presentation, use a production build:
 
 ```bash
 bun run build
 bun start
 ```
 
-All models, wallpapers, fonts, and synthesized sounds are served locally. No external asset service is required after installation/build. Source links open external websites when selected. The entry screen also offers **Straight to the desktop**.
+All models, wallpapers, fonts, and synthesized sounds are served locally. No external asset service is required after installation/build. Source links open external websites when selected. `/desktop` remains the embedded desktop route.
 
 ## Presentation
 
@@ -33,8 +33,8 @@ The narration starts with familiar actions, explains each technical term, and of
 
 ## Explore the workstation
 
-- Click **START** for the distant workstation reveal, then click anywhere to approach the desk.
-- Move onto the display or choose **Use the computer** to enter the live GNOME-style screen. Move away to step back.
+- The full desk is the opening view. Click the computer screen or case, or use **Click the computer to enter**, to enter the live GNOME-style desktop.
+- Hovering leaves the camera where it is. Choose **Back to desk** or press `Esc` to return to the physical workstation.
 - Use **Free camera** to orbit the workstation; drag to look around and scroll to zoom.
 - Choose **Explore the desk** to pick up the mug, read the note, swivel the chair, or press the PC power button. The objects themselves are clickable; matching controls support keyboard and touch.
 - With the mug held, click the plant, PC, or desk (or select its name), then hold **Pour** or `P`. Releasing stops the stream. Coffee is finite; **Clean up / refill** clears spills and refills the mug.
@@ -84,7 +84,7 @@ CPU percentages and memory measurements are illustrative simulation data, not re
 - `app/desktop/`, `components/desktop/DesktopSession.tsx`: the same-origin desktop iframe and validated host/session messaging.
 - `components/desktop/`: wallpaper, top bar, activities, dock, notifications, and window manager.
 - `components/apps/`: Lesson, Files, Terminal, System Monitor, Settings, About, Software, and Dino Runner.
-- `app/presentation/`: direct entry to the presentation.
+- `app/presentation/`: compatibility entry to the same physical workstation.
 - `components/lesson/`: presentation controls, chapter illustrations, language toggle, and safe manuscript renderer.
 - `store/system.ts`: windows, processes, allocations, settings, notifications, and lesson progress.
 - `store/room.ts`: mug contents, pour targets, spills, chair rotation, note, and simulated power. Pouring uses a bounded clock and lightweight procedural geometry, without a physics engine.
@@ -98,7 +98,7 @@ Next.js App Router, React, TypeScript, Zustand, React Three Fiber, Three.js, and
 
 ## Accessibility and reliability
 
-System `prefers-reduced-motion` is respected; manual reduction is available at entry and in Settings. The presentation uses DOM text and controls, with scrollable narration and native answer disclosures. Sound starts muted and is synthesized without copyrighted recordings. WebGL failure falls back to the working desktop; **Straight to the desktop** also bypasses the camera sequence. The desktop adapts to narrow viewports; the lesson allows scrolling when content cannot fit. Laptop and projector viewports remain the primary presentation target.
+System `prefers-reduced-motion` is respected; manual reduction is available in Settings. The presentation uses DOM text and controls, with scrollable narration and native answer disclosures. Sound starts muted and is synthesized without copyrighted recordings. WebGL failure falls back to the working desktop. The desktop adapts to narrow viewports; the lesson allows scrolling when content cannot fit. Laptop and projector viewports remain the primary presentation target.
 
 ## Checks
 

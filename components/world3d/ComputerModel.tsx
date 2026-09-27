@@ -32,8 +32,8 @@ function CRTNoise({ paused }: { paused: boolean }) {
   return <mesh position={[0, 0, 60 / 900]} material={material}><planeGeometry args={[screenWidth, screenHeight]} /></mesh>;
 }
 
-export default function ComputerModel({ onClick, onScreenActivate, onScreenHover, onReady, paused, interactive = false }: {
-  onClick: () => void; onScreenActivate: () => void; onScreenHover: () => void; onReady: () => void; paused: boolean; interactive?: boolean;
+export default function ComputerModel({ onClick, onScreenActivate, onReady, paused, interactive = false }: {
+  onClick: () => void; onScreenActivate: () => void; onReady: () => void; paused: boolean; interactive?: boolean;
 }) {
   const powerOn = useRoomStore((state) => state.powerOn);
   const models = useGLTF(modelPaths, false, false);
@@ -83,10 +83,11 @@ export default function ComputerModel({ onClick, onScreenActivate, onScreenHover
       state.aim(event.object.name === "monitor_base" ? "pc" : "desk");
       return;
     }
-    onClick();
+    if (event.object.name === "monitor_base") onScreenActivate();
+    else onClick();
   }}>
     {assets.scenes.map((scene, index) => <primitive key={modelPaths[index]} object={scene} dispose={null} />)}
-    <RoomProps meshes={assets.roomMeshes} interactive={interactive} paused={paused} />
+    <RoomProps meshes={assets.roomMeshes} interactive={interactive} paused={paused} onComputerActivate={onScreenActivate} />
     {/* CSS3D desktop is underneath the WebGL canvas. NoBlending writes an
         alpha-zero opening, so the real DOM is visible through the CRT housing. */}
     <group position={[0, 950 / 900, 255 / 900]} rotation={[-Math.PI / 60, 0, 0]}
@@ -100,7 +101,6 @@ export default function ComputerModel({ onClick, onScreenActivate, onScreenHover
         event.stopPropagation();
         const state = useRoomStore.getState();
         if (interactive && state.held) state.setHovered("pc");
-        else if (state.powerOn && event.pointerType !== "touch") onScreenHover();
       }}
       onPointerOut={() => { const state = useRoomStore.getState(); if (state.hovered === "pc") state.setHovered(null); }}>
       <mesh>

@@ -14,7 +14,7 @@ const PLANT_PIVOT = new Vector3(4.113, -3.315, -0.117);
 export interface RoomMeshes { mug: Mesh; paper: Mesh; plant: Mesh; chairSeat: Mesh; chairBase: Mesh; desk: Mesh; computer: Mesh }
 type RoomHover = "mug" | "paper" | "plant" | "pc" | "chair" | "desk";
 
-export default function RoomProps({ meshes, interactive, paused }: { meshes: RoomMeshes; interactive: boolean; paused: boolean }) {
+export default function RoomProps({ meshes, interactive, paused, onComputerActivate }: { meshes: RoomMeshes; interactive: boolean; paused: boolean; onComputerActivate: () => void }) {
   const mug = useRef<Group>(null);
   const coffee = useRef<Mesh>(null);
   const chair = useRef<Group>(null);
@@ -56,6 +56,7 @@ export default function RoomProps({ meshes, interactive, paused }: { meshes: Roo
     else if (object === "paper") state.openNote();
     else if (object === "chair") state.swivelChair();
     else if (state.held) state.aim(object);
+    else if (object === "pc" && state.powerOn) onComputerActivate();
   }
   function handlers(object: RoomHover) {
     return { onClick: (event: ThreeEvent<MouseEvent>) => activate(event, object), onPointerOver: (event: ThreeEvent<PointerEvent>) => hover(event, object), onPointerOut: () => leave(object) };
