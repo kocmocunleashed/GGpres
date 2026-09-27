@@ -6,7 +6,6 @@ import { useReducedMotion } from 'motion/react';
 import { manuscript, slideCopy } from '@/lib/presentation-data';
 import { usePresentationLanguage } from '@/lib/presentation-language';
 import { useSystemStore, type AppId } from '@/store/system';
-import LanguageToggle from './LanguageToggle';
 import ChapterVisual from './ChapterVisual';
 import Manuscript from './Manuscript';
 import './presentation.css';
@@ -102,7 +101,7 @@ export default function LessonEngine() {
   return <div ref={root} tabIndex={-1} lang={language} className="p-engine" data-reading={reading} data-reduced={!!systemReduced || reducedMotion} data-chapter={isQuiz ? 'quiz' : current + 1} aria-label={t.learn}>
     <header className="p-header">
       <button className="p-brand" onClick={leave} aria-label={t.exit}><span className="p-brand-symbol" aria-hidden="true">o.</span><span>opitlcal<span className="p-brand-os">OS</span><small>{t.lesson}</small></span></button>
-      <div className="p-header-right"><LanguageToggle /><button className="p-icon-button" onClick={leave} aria-label={t.exit} title={t.exit}><X size={21} /></button></div>
+      <div className="p-header-right"><button className="p-icon-button" onClick={leave} aria-label={t.exit} title={t.exit}><X size={21} /></button></div>
     </header>
     <div className="p-toolbar">
       <button className="p-text-button" onClick={() => openModal('contents')}><List size={17} />{t.chapters}<span className="p-small-count">17</span></button>

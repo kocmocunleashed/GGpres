@@ -3,6 +3,8 @@
 import { Check, Monitor, Moon, Volume2, Wind } from "lucide-react";
 import WaveMark from "@/components/visual/WaveMark";
 import { useSystemStore } from "@/store/system";
+import { usePresentationLanguage } from "@/lib/presentation-language";
+import LanguageToggle from "@/components/lesson/LanguageToggle";
 
 const themes = [
   { id: "wave", name: "Original", description: "A familiar blue current" },
@@ -11,6 +13,7 @@ const themes = [
 ] as const;
 
 export function SettingsApp() {
+  const [language] = usePresentationLanguage();
   const theme = useSystemStore((state) => state.theme);
   const setTheme = useSystemStore((state) => state.setTheme);
   const muted = useSystemStore((state) => state.muted);
@@ -23,6 +26,7 @@ export function SettingsApp() {
   const setWallpaper = useSystemStore((state) => state.setWallpaper);
   return <div className="app-settings app-scroll-content">
     <div className="app-content-heading"><h2>Your space, your pace.</h2><p>A few comforts for a better learning session.</p></div>
+    <section className="app-settings-section app-language-section" aria-labelledby="settings-language-heading"><h3 id="settings-language-heading">Language / Хэл</h3><div className="app-language-choice"><p>{language === "mn" ? "Хичээл болон Pocket Slots-ийн хэлийг сонгоно. Сонголт хадгалагдана." : "Choose the language for the lesson and Pocket Slots. Your choice is remembered."}</p><LanguageToggle /></div></section>
     <fieldset className="app-theme-picker"><legend>Desktop theme</legend><div className="app-theme-options">{themes.map(({ id, name, description }) => <label className="app-theme-option" key={id}>
       <input type="radio" name="desktop-theme" value={id} checked={theme === id} onChange={() => setTheme(id)} aria-label={name} />
       <span className={`app-theme-preview app-theme-preview-${id}`} aria-hidden="true"><span className="app-theme-mini-bar" /><span className="app-theme-mini-window"><i /><i /><i /></span><span className="app-theme-mini-dock"><i /><i /><i /></span><span className="app-theme-selected"><Check size={13} /></span></span>

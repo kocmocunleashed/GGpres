@@ -11,7 +11,7 @@ bun install
 bun dev
 ```
 
-Open the presentation directly at [localhost:3000/presentation](http://localhost:3000/presentation), or enter the 3D workstation at [localhost:3000](http://localhost:3000). For a classroom presentation, use a production build:
+Open [localhost:3000](http://localhost:3000) and press **START** for the original workstation opening and desk setup. The presentation is also available directly at [localhost:3000/presentation](http://localhost:3000/presentation). For a classroom presentation, use a production build:
 
 ```bash
 bun run build
@@ -22,7 +22,7 @@ All models, wallpapers, fonts, and synthesized sounds are served locally. No ext
 
 ## Presentation
 
-- Switch **EN / MN** to change the slides, diagrams, narration, and review questions while staying on the same page. The browser remembers this language choice when local storage is available.
+- Choose **Settings → Language / Хэл → EN / Монгол** on the desktop to change the lesson and Pocket Slots language. The language control appears only in Settings. The browser remembers your choice when local storage is available; return to the lesson to resume the same chapter.
 - Choose **Read along** to read the full manuscript for the current chapter. Reading checks and the final eight questions keep answers hidden until you reveal them.
 - Open **Chapters** to jump to any of the 17 sections or the review questions. **Sources & notes** contains the introduction, teaching notes, and source links; individual claims link to their sources in the narration.
 - `→` / `Space`: next page; `←`: previous page; `R`: switch between slides and Read along; `Esc`: return to the desktop. Space activates a focused button or answer control instead of advancing the page.

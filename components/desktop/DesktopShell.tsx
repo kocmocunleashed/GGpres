@@ -5,7 +5,6 @@ import { useCallback, useEffect, useState } from "react";
 import { ArrowUpRight, Play, X } from "lucide-react";
 import { useSystemStore } from "@/store/system";
 import { usePresentationLanguage } from "@/lib/presentation-language";
-import LanguageToggle from "@/components/lesson/LanguageToggle";
 import TopBar from "./TopBar";
 import Dock from "./Dock";
 import Activities from "./Activities";
@@ -122,7 +121,6 @@ export default function DesktopShell({
             <AppIcon appId="files" size={56} />
             <span>Home</span>
           </button>
-          <LanguageToggle className="desktop-language" />
         </div>
         <h1 className="sr-only">
           {mn ? "opitlcalOS компьютерийн дэлгэц" : "opitlcalOS desktop"}

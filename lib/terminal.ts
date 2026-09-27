@@ -12,7 +12,7 @@ const MANUAL: Record<string, string> = {
   kill: "kill <pid>\nEnd a simulated app process and close its window. Protected system processes cannot be ended in this lesson.",
   free: "free [-m|-h]\nShow the simulated system's memory allocation. These numbers match System Monitor.",
   uname: "uname [-a|-r]\nShow this fictional system's kernel name or version. opitlcalOS does not run a real kernel inside your browser.",
-  lesson: "lesson\nOpen or focus Your computer, your choices: 17 chapters and 8 questions.\nChoose EN / MN for English or Mongolian. Read along opens the full manuscript.",
+  lesson: "lesson\nOpen or focus Your computer, your choices: 17 chapters and 8 questions.\nChoose English or Mongolian in Settings > Language. Read along opens the full manuscript.",
   dino: "dino\nOpen or focus Dino Runner. Space or Up jumps; Down ducks. Pauses when you leave the game.",
   slots: "slots\nOpen or focus Pocket Slots. Three reels, 30 free demo credits.\nA spin costs 1 credit. Press the Spin button with Enter or Space.\nDemo credits have no monetary value; Reset gives you a fresh set.",
   reboot: "reboot\nReset the virtual desktop session, closing every app. Your browser and real computer are unaffected.",
