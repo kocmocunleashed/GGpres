@@ -11,6 +11,7 @@ const collection: { id: AppId; description: string }[] = [
   { id: "terminal", description: "A command line for the curious. Type help to begin." },
   { id: "system-monitor", description: "Meet your processes. Watch your resources. Connect the dots." },
   { id: "runner", description: "The open-source Chromium dinosaur runner. A quick break between discoveries." },
+  { id: "slots", description: "A tiny three-reel game with free demo credits. Adapted from an MIT-licensed game." },
 ];
 
 export function SoftwareApp() {

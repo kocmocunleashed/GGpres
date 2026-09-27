@@ -13,6 +13,7 @@ const descriptions: Record<AppId, string> = {
   about: "Meet your operating system",
   software: "A small, opinionated app collection",
   runner: "Jump, duck, and beat your best distance",
+  slots: "A three-reel game with free demo credits",
 };
 
 export default function Activities({ onClose }: { onClose: () => void }) {

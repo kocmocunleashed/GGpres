@@ -14,7 +14,8 @@ const apps = {
   about: dynamic(() => import("@/components/apps/AboutApp"), { loading: Loading }),
   software: dynamic(() => import("@/components/apps/SoftwareApp"), { loading: Loading }),
   runner: dynamic(() => import("@/components/apps/RunnerApp"), { loading: Loading }),
-} satisfies Record<AppId, React.ComponentType>;
+  slots: dynamic(() => import("@/components/apps/SlotsApp"), { loading: Loading }),
+} satisfies Record<AppId, React.ComponentType<{ active?: boolean }>>;
 
 function AppWindow({ win, focused, viewport }: { win: WindowState; focused: boolean; viewport: { width: number; height: number } }) {
   const windowRef = useRef<HTMLElement>(null);
@@ -24,6 +25,7 @@ function AppWindow({ win, focused, viewport }: { win: WindowState; focused: bool
   const left = Math.max(12, Math.min(win.x, viewport.width - width - 12));
   const top = Math.max(10, Math.min(win.y, viewport.height - 134 - height));
   const App = apps[win.appId];
+  const lessonPresenting = useSystemStore((state) => state.lessonPresenting);
 
   useEffect(() => {
     if (focused && !win.minimized && !windowRef.current?.contains(document.activeElement)) {
@@ -49,7 +51,7 @@ function AppWindow({ win, focused, viewport }: { win: WindowState; focused: bool
       <span className="desktop-window-title" tabIndex={0} title="Drag to move. Double-click to maximize. Alt + arrow keys to move with keyboard." onKeyDown={(event) => { if (event.altKey && event.key.startsWith("Arrow")) { event.preventDefault(); const dx = event.key === "ArrowRight" ? 30 : event.key === "ArrowLeft" ? -30 : 0; const dy = event.key === "ArrowDown" ? 30 : event.key === "ArrowUp" ? -30 : 0; useSystemStore.getState().moveWindow(win.id, Math.max(12, left + dx), Math.max(10, top + dy)); } }}>{win.title}</span>
       <div className="desktop-window-controls"><button onClick={() => useSystemStore.getState().minimizeWindow(win.id)} aria-label={`Minimize ${win.title}`} title="Minimize"><Minus size={14} /></button><button onClick={() => useSystemStore.getState().toggleMaximize(win.id)} aria-label={`${win.maximized ? "Restore" : "Maximize"} ${win.title}`} title={win.maximized ? "Restore" : "Maximize"}>{win.maximized ? <Minimize2 size={12} /> : <Maximize2 size={12} />}</button><button className="desktop-window-close" onClick={() => useSystemStore.getState().closeWindow(win.id)} aria-label={`Close ${win.title}`} title="Close"><X size={14} /></button></div>
     </header>
-    <div className="desktop-window-content"><App /></div>
+    <div className="desktop-window-content"><App active={focused && !win.minimized && !lessonPresenting} /></div>
   </section>;
 }
 

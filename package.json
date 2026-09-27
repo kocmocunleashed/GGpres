@@ -3,11 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
+    "dev": "bun run generate:presentation && next dev",
+    "build": "bun run generate:presentation && next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "bun test lib/system.test.ts lib/room.test.ts lib/runner.test.ts"
+    "test": "bun test lib/system.test.ts lib/room.test.ts lib/runner.test.ts lib/presentation.test.ts lib/slots.test.ts",
+    "generate:presentation": "bun scripts/generate-presentation.ts",
+    "check:presentation": "bun scripts/generate-presentation.ts --check"
   },
   "dependencies": {
     "@fontsource/ibm-plex-mono": "^5.3.0",

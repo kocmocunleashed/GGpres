@@ -3,17 +3,18 @@ import { totalCpu, totalMemory, useSystemStore } from "@/store/system";
 
 export type TerminalContext = { cwd: string; history: string[] };
 export type TerminalResult = { output: string; cwd?: string; clear?: boolean };
-const COMMANDS = ["help", "ls", "cd", "pwd", "cat", "clear", "history", "whoami", "uname", "hostname", "ps", "top", "free", "kill", "man", "neofetch", "lesson", "dino", "sudo", "rm", "reboot", "fedora", "geometry-dash"];
+const COMMANDS = ["help", "ls", "cd", "pwd", "cat", "clear", "history", "whoami", "uname", "hostname", "ps", "top", "free", "kill", "man", "neofetch", "lesson", "dino", "slots", "sudo", "rm", "reboot", "fedora", "geometry-dash"];
 const MANUAL: Record<string, string> = {
-  ls: "ls [path]\nList the files and folders at a virtual path. Try ls /etc.", cd: "cd [path]\nChange directory. With no path, return home. Use cd .. to go up.",
-  cat: "cat <file> [file...]\nRead a virtual text file. Try cat /etc/os-release or cat /proc/meminfo.",
+  ls: "ls [path]\nList the files and folders at a virtual path. Try ls /home/student/Documents.", cd: "cd [path]\nChange directory. With no path, return home. Use cd .. to go up.",
+  cat: "cat <file> [file...]\nRead a virtual text file. Try cat /home/student/Documents/notes.txt.\nFor Mongolian: cat /home/student/Documents/notes.mn.txt.",
   ps: "ps\nShow a snapshot of simulated processes. PID identifies a process; memory is in MiB. Opening an app adds its process.",
   top: "top\nShow one snapshot of simulated process and CPU usage. Open System Monitor for the live shared view.",
   kill: "kill <pid>\nEnd a simulated app process and close its window. Protected system processes cannot be ended in this lesson.",
   free: "free [-m|-h]\nShow the simulated system's memory allocation. These numbers match System Monitor.",
   uname: "uname [-a|-r]\nShow this fictional system's kernel name or version. opitlcalOS does not run a real kernel inside your browser.",
-  lesson: "lesson\nOpen or focus the Operating Systems lesson.",
+  lesson: "lesson\nOpen or focus Your computer, your choices: 17 chapters and 8 questions.\nChoose EN / MN for English or Mongolian. Read along opens the full manuscript.",
   dino: "dino\nOpen or focus Dino Runner. Space or Up jumps; Down ducks. Pauses when you leave the game.",
+  slots: "slots\nOpen or focus Pocket Slots. Three reels, 30 free demo credits.\nA spin costs 1 credit. Press the Spin button with Enter or Space.\nDemo credits have no monetary value; Reset gives you a fresh set.",
   reboot: "reboot\nReset the virtual desktop session, closing every app. Your browser and real computer are unaffected.",
 };
 
@@ -30,7 +31,7 @@ export function executeCommand(input: string, context: TerminalContext): Termina
   const usedMemory = totalMemory(state.processes);
   const path = resolvePath(args[0] ?? "", context.cwd);
   switch (command) {
-    case "help": return { output: `opitlcal shell · a safe, simulated command line\n\n${COMMANDS.join("  ")}\n\nTry: ls Documents → cat Documents/notes.txt\nOpen Files, then run ps and kill <its PID>.\nUse ↑ / ↓ for history. Tab completes commands and paths.\nNothing here can access your real computer.` };
+    case "help": return { output: `opitlcal shell · a safe, simulated command line\n\n${COMMANDS.join("  ")}\n\nStart with the same files you see in Files:\nls /home/student/Documents\ncat /home/student/Documents/notes.txt\nFor Mongolian: cat /home/student/Documents/notes.mn.txt\n\nls lists names; cat reads text. Neither changes a file.\nType lesson to open the presentation, or man followed by a command to learn about it.\nUse ↑ / ↓ for history. Tab completes commands and paths.\nNothing here can access your real computer.` };
     case "pwd": return { output: context.cwd };
     case "whoami": return { output: "student" };
     case "hostname": return { output: "opitlcal-workstation" };
@@ -70,15 +71,16 @@ export function executeCommand(input: string, context: TerminalContext): Termina
       state.killProcess(pid);
       return { output: `Ended ${process.name} (${pid}). Released ${process.memory} MiB.` };
     }
-    case "man": return { output: args[0] ? MANUAL[args[0]] ?? (COMMANDS.includes(args[0]) ? `${args[0]}\nA built-in opitlcalOS learning command. Type help for the full command list.` : `No manual entry for ${args[0]}.`) : "Usage: man <command>. Try man kill." };
+    case "man": return { output: args[0] ? MANUAL[args[0]] ?? (COMMANDS.includes(args[0]) ? `${args[0]}\nA built-in opitlcalOS learning command. Type help for the full command list.` : `No manual entry for ${args[0]}.`) : "Usage: man <command>. Try man ls or man cat." };
     case "neofetch": return { output: "       /\\         student@opitlcal-workstation\n      /  \\        ─────────────────────────\n     / /\\ \\       OS       opitlcalOS 1.0 Classroom\n    / /  \\ \\      Kernel   Linux 6.12 (simulated)\n    \\ \\  / /      Desktop  opitlcal Shell · GNOME-inspired\n     \\ \\/ /       Shell    opitlcal-sh\n      \\  /        Memory   " + usedMemory + " / 8192 MiB\n       \\/         Motto    Make complexity usable.\n\nA fictional educational system. Not an official Fedora product." };
-    case "lesson": state.openApp("lesson"); return { output: "Opening Operating Systems…" };
+    case "lesson": state.openApp("lesson"); return { output: "Opening Your computer, your choices…" };
     case "dino": state.openApp("runner"); return { output: "Opening Dino Runner…" };
+    case "slots": state.openApp("slots"); return { output: "Opening Pocket Slots…" };
     case "sudo": return { output: args[0] === "rm" ? "Absolutely not.\nThis is a school project." : "student is already the administrator of their curiosity.\nThis simulated shell does not elevate privileges." };
     case "rm": return { output: "This classroom filesystem is read-only. Your notes are safe." };
     case "reboot": state.resetSession(); state.notify("Session restarted", "A fresh desktop. The curiosity stays."); return { output: "Restarting virtual session…" };
-    case "fedora": return { output: "Fedora is a Linux distribution. Linux is its kernel.\nGNOME is the desktop environment used by Fedora Workstation.\n\nSome distributions are better than others.\n— definitely not Fedora marketing (a joke, not a benchmark)" };
-    case "geometry-dash": return { output: "Difficulty: understanding virtual memory.\nAttempts: unlimited.\nPractice mode: already enabled." };
+    case "fedora": return { output: "Fedora is a Linux distribution. Linux is its kernel.\nGNOME is the desktop environment used by Fedora Workstation.\n\nWe like Fedora for exploring how a computer works.\nIt still needs updates, and your apps and devices need to work with it.\nType lesson to learn more." };
+    case "geometry-dash": return { output: "Difficulty: remembering to save the cat.\nAttempts: unlimited.\nPractice mode: already enabled." };
     default: return { output: `${command}: command not found. Type help to see available commands.` };
   }
 }

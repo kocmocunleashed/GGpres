@@ -17,7 +17,7 @@ function postDesktopMessage(message: DesktopMessage) {
 }
 
 /** One desktop instance lives for the lifetime of the same-origin screen frame. */
-export default function DesktopSession() {
+export default function DesktopSession({ startLesson = false }: { startLesson?: boolean }) {
   const embedded = useSyncExternalStore(subscribeToEmbedding, getEmbedding, getServerEmbedding);
   const [host, setHost] = useState<HostStateMessage | null>(null);
   const [session, setSession] = useState(0);
@@ -31,6 +31,13 @@ export default function DesktopSession() {
   const systemReducedMotion = useReducedMotion();
   const powered = !embedded || host?.powered !== false;
   const active = !embedded || host?.active === true && powered;
+
+  useEffect(() => {
+    if (!startLesson) return;
+    const state = useSystemStore.getState();
+    state.openApp("lesson");
+    state.setLessonPresenting(true);
+  }, [startLesson]);
 
   useEffect(() => {
     const inFrame = window.parent !== window;

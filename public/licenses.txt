@@ -33,6 +33,13 @@ Pinned commit: 5455bfa408ec6b707c7300ff194b7390733a766d
 The engine retains its Chromium copyright header. Both BSD-3-Clause notices
 are distributed at /games/runner/LICENSE and /games/runner/LICENSE.chromium.
 Source provenance and local integration changes: /games/runner/SOURCE.md
+
+Pocket Slots
+Reel-strip animation adapted from johakr/html5-slot-machine (MIT).
+Copyright (c) 2017 Johannes Kronmüller.
+Pinned source: 347fc31ddd227674d8dc93e238d6664784e1872d.
+License: /games/slots/LICENSE.txt
+Provenance and local changes: /games/slots/SOURCE.md
 No upstream demo media or sound files are bundled.
 
 Design references:

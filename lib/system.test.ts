@@ -81,17 +81,17 @@ test("shell completion, safe jokes, and reset retain intentional boundaries", ()
   assert.equal(useSystemStore.getState().processes.length, 3);
 });
 
-test("the runner shares process lifecycle with the desktop and terminal", () => {
+for (const [command, appId, title, processName] of [["dino", "runner", "Dino Runner", "dino-runner"], ["slots", "slots", "Pocket Slots", "pocket-slots"]] as const) test(`${title} shares process lifecycle with the desktop and terminal`, () => {
   const before = totalMemory(useSystemStore.getState().processes);
-  assert.match(run("dino").output, /Opening Dino Runner/);
-  const runner = useSystemStore.getState().windows.find((win) => win.appId === "runner")!;
-  assert.match(run("ps").output, new RegExp(`${runner.processId} +dino-runner`));
+  assert.match(run(command).output, new RegExp(`Opening ${title}`));
+  const game = useSystemStore.getState().windows.find((win) => win.appId === appId)!;
+  assert.match(run("ps").output, new RegExp(`${game.processId} +${processName}`));
   assert.ok(totalMemory(useSystemStore.getState().processes) > before);
-  useSystemStore.getState().minimizeWindow(runner.id);
-  run("dino");
-  assert.equal(useSystemStore.getState().windows.filter((win) => win.appId === "runner").length, 1);
-  assert.equal(useSystemStore.getState().windows.find((win) => win.id === runner.id)?.minimized, false);
-  assert.match(run(`kill ${runner.processId}`).output, /Ended dino-runner/);
+  useSystemStore.getState().minimizeWindow(game.id);
+  run(command);
+  assert.equal(useSystemStore.getState().windows.filter((win) => win.appId === appId).length, 1);
+  assert.equal(useSystemStore.getState().windows.find((win) => win.id === game.id)?.minimized, false);
+  assert.match(run(`kill ${game.processId}`).output, new RegExp(`Ended ${processName}`));
   assert.equal(useSystemStore.getState().windows.length, 0);
   assert.equal(totalMemory(useSystemStore.getState().processes), before);
 });

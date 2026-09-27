@@ -1,0 +1,33 @@
+.language-toggle {
+  display: inline-flex;
+  flex: 0 0 auto;
+  padding: 3px;
+  border: 1px solid #d5d7d1;
+  border-radius: 5px;
+  background: #f8f8f3;
+  color: #252821;
+  font: 500 13px/1.2 var(--font-sans);
+}
+
+.language-toggle button {
+  min-width: 44px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 2px;
+  background: transparent;
+  color: inherit;
+}
+
+.language-toggle button:hover {
+  background: #e9eae4;
+}
+
+.language-toggle button[aria-pressed="true"] {
+  background: #2354f4;
+  color: #fff;
+}
+
+.language-toggle button:focus-visible {
+  outline: 2px solid #2354f4;
+  outline-offset: 4px;
+}

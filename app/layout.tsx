@@ -1,18 +1,28 @@
 import type { Metadata } from "next";
-import "@fontsource/ibm-plex-sans/latin-200.css";
-import "@fontsource/ibm-plex-sans/latin-300.css";
-import "@fontsource/ibm-plex-sans/latin-400.css";
-import "@fontsource/ibm-plex-sans/latin-500.css";
-import "@fontsource/ibm-plex-sans/latin-600.css";
-import "@fontsource/ibm-plex-mono/latin-400.css";
-import "@fontsource/ibm-plex-mono/latin-500.css";
+// These local, unicode-ranged styles include Cyrillic Extended for Монгол Ө/Ү.
+import "@fontsource/ibm-plex-sans/200.css";
+import "@fontsource/ibm-plex-sans/300.css";
+import "@fontsource/ibm-plex-sans/400.css";
+import "@fontsource/ibm-plex-sans/500.css";
+import "@fontsource/ibm-plex-sans/600.css";
+import "@fontsource/ibm-plex-mono/400.css";
+import "@fontsource/ibm-plex-mono/500.css";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "opitlcalOS — Beneath the Interface",
-  description: "An interactive journey through operating systems. Enter a workstation, explore a working desktop, and discover the complexity underneath.",
+  title: "Operating systems, Linux & your privacy · opitlcalOS",
+  description:
+    "A beginner's guide to operating systems, Linux, Fedora, security, and data collection. Read and explore 17 chapters in English or Mongolian.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en"><body>{children}</body></html>;
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
 }

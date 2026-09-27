@@ -3,7 +3,7 @@
 import { create } from "zustand";
 import { createFilesystem, TOTAL_MEMORY_MB, type VirtualFilesystem } from "@/lib/filesystem";
 
-export type AppId = "lesson" | "files" | "terminal" | "system-monitor" | "settings" | "about" | "software" | "runner";
+export type AppId = "lesson" | "files" | "terminal" | "system-monitor" | "settings" | "about" | "software" | "runner" | "slots";
 export type DesktopTheme = "wave" | "monochrome" | "pink";
 export type WindowState = { id: string; appId: AppId; title: string; x: number; y: number; width: number; height: number; minimized: boolean; maximized: boolean; zIndex: number; processId: number };
 export type ProcessState = { pid: number; name: string; memory: number; cpu: number; protected?: boolean; appId?: AppId };
@@ -17,6 +17,7 @@ export const APP_META: Record<AppId, { title: string; processName: string; color
   about: { title: "About opitlcalOS", processName: "about", color: "#9e9aff", memory: 32, cpu: 0.1, description: "Meet your workstation" },
   software: { title: "Software", processName: "software", color: "#eaa36c", memory: 108, cpu: 0.5, description: "A carefully curated collection" },
   runner: { title: "Dino Runner", processName: "dino-runner", color: "#83b995", memory: 64, cpu: 1.4, description: "A little prehistoric downtime" },
+  slots: { title: "Pocket Slots", processName: "pocket-slots", color: "#ffb17a", memory: 32, cpu: 0.3, description: "Three reels and free demo credits" },
 };
 export { TOTAL_MEMORY_MB };
 export const totalMemory = (processes: ProcessState[]) => processes.reduce((sum, process) => sum + process.memory, 0);
@@ -52,8 +53,8 @@ export const useSystemStore = create<SystemStore>((set, get) => ({
     const meta = APP_META[appId];
     const viewportWidth = typeof window === "undefined" ? 1440 : window.innerWidth;
     const viewportHeight = typeof window === "undefined" ? 900 : window.innerHeight;
-    const width = Math.min(appId === "lesson" ? 1020 : 800, viewportWidth - 24);
-    const height = Math.min(appId === "lesson" ? 690 : 530, viewportHeight - 120);
+    const width = Math.min(appId === "lesson" ? 1020 : appId === "slots" ? 650 : 800, viewportWidth - 24);
+    const height = Math.min(appId === "lesson" ? 690 : appId === "slots" ? 600 : 530, viewportHeight - 120);
     const offset = (state.windows.length % 4) * 24;
     const processId = state.nextPid;
     return {

@@ -1,123 +1,137 @@
 'use client';
 
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ArrowLeft, ArrowRight, Expand, Grid2X2, Pause, Play, RotateCcw, Volume2, VolumeX, X } from 'lucide-react';
+import { ArrowLeft, ArrowRight, BookOpen, Check, Expand, List, Monitor, RotateCcw, X } from 'lucide-react';
 import { useReducedMotion } from 'motion/react';
-import { lessonChapters, lessonScenes } from '@/lib/lesson-data';
-import { useSystemStore } from '@/store/system';
-import LessonWorld from './LessonWorld';
-import SceneRenderer from './SceneRenderer';
-import './lesson.css';
+import { manuscript, slideCopy } from '@/lib/presentation-data';
+import { usePresentationLanguage } from '@/lib/presentation-language';
+import { useSystemStore, type AppId } from '@/store/system';
+import LanguageToggle from './LanguageToggle';
+import ChapterVisual from './ChapterVisual';
+import Manuscript from './Manuscript';
+import './presentation.css';
+
+const labels = {
+  en: { lesson: 'A field guide to your computer', chapters: 'Chapters', read: 'Read along', slides: 'Slides', back: 'Previous', next: 'Next chapter', nextQuestion: 'Next question', exit: 'Back to desktop', fullscreen: 'Toggle fullscreen', reset: 'Reset illustration', sources: 'Sources & teaching notes', chapter: 'Chapter', question: 'Question', think: 'A little check-in.', quiz: 'What stayed with you?', show: 'Reveal answer', hide: 'Hide answer', finish: 'Finish lesson', done: 'You know what is underneath.', complete: 'Lesson complete', explore: 'Explore the desktop', again: 'Start again', answer: 'One way to explain it', checked: 'answers explored', key: '← → to move · R to read · Esc for desktop', contents: 'The whole story.', contentsIntro: 'Follow the blue cat from your first click to the information you share.', learn: 'Your computer, your choices', startQuiz: 'Check what you learned', note: 'Take a moment. Try explaining it in your own words before revealing the answer.', verified: 'Source notes · checked 27 September 2026', unavailable: 'Fullscreen is unavailable here. The presentation still fills this view.', important: 'The idea to keep', reading: 'The full story', about: 'Before you begin' },
+  mn: { lesson: 'Компьютерээ ойлгох хөтөч', chapters: 'Хэсгүүд', read: 'Уншиж дагах', slides: 'Слайд', back: 'Өмнөх', next: 'Дараах хэсэг', nextQuestion: 'Дараах асуулт', exit: 'Desktop руу буцах', fullscreen: 'Бүтэн дэлгэц', reset: 'Үзүүлэнг дахин эхлүүлэх', sources: 'Эх сурвалж ба багшийн тэмдэглэл', chapter: 'Хэсэг', question: 'Асуулт', think: 'Түр бодоод үзье.', quiz: 'Юу ойлгож авсан бэ?', show: 'Хариуг харах', hide: 'Хариуг нуух', finish: 'Хичээл дуусгах', done: 'Цаана нь юу байдгийг мэддэг боллоо.', complete: 'Хичээл дууслаа', explore: 'Desktop-ийг судлах', again: 'Дахин эхлэх', answer: 'Ингэж тайлбарлаж болно', checked: 'хариултыг үзлээ', key: '← → шилжих · R унших · Esc desktop', contents: 'Бүх түүх.', contentsIntro: 'Эхний даралтаас мэдээллээ хуваалцах хүртэл цэнхэр муурыг дагая.', learn: 'Чиний компьютер, чиний сонголт', startQuiz: 'Сурснаа шалгаарай', note: 'Хариуг харахаасаа өмнө өөрийн үгээр тайлбарлаж үзээрэй.', verified: 'Эх сурвалж · 2026.09.27-нд шалгасан', unavailable: 'Бүтэн дэлгэцийн горим энд боломжгүй байна. Илтгэл энэ цонхыг дүүргэж харагдана.', important: 'Санаж үлдэх санаа', reading: 'Дэлгэрэнгүй тайлбар', about: 'Эхлэхийн өмнө' },
+};
 
 export default function LessonEngine() {
-  const index = useSystemStore(state => state.lessonIndex);
-  const muted = useSystemStore(state => state.muted);
-  const motionPaused = useSystemStore(state => state.motionPaused);
-  const reducedMotion = useSystemStore(state => state.reducedMotion);
-  const systemReducedMotion = useReducedMotion();
+  const [language] = usePresentationLanguage();
+  const t = labels[language];
+  const data = manuscript[language];
+  const index = useSystemStore(s => s.lessonIndex);
+  const reducedMotion = useSystemStore(s => s.reducedMotion);
+  const systemReduced = useReducedMotion();
+  const [reading, setReading] = useState(false);
+  const [modal, setModal] = useState<'contents' | 'sources' | null>(null);
   const [reset, setReset] = useState(0);
-  const [direction, setDirection] = useState('forward');
-  const [overview, setOverview] = useState(false);
-  const rootRef = useRef<HTMLDivElement>(null);
-  const keepLessonOnFullscreenExit = useRef(false);
-  const chapterDialog = useRef<HTMLDialogElement>(null);
-  const safeIndex = Math.max(0, Math.min(index, lessonScenes.length - 1));
-  const scene = lessonScenes[safeIndex];
-  const chapter = lessonChapters.find(item => item.number === scene.chapter);
+  const [revealed, setRevealed] = useState<number[]>([]);
+  const [finished, setFinished] = useState(false);
+  const [notice, setNotice] = useState('');
+  const root = useRef<HTMLDivElement>(null);
+  const stage = useRef<HTMLDivElement>(null);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const fullscreenToggle = useRef(false);
+  const total = data.sections.length + data.quiz.length;
+  const current = Math.max(0, Math.min(index, total - 1));
+  const quizIndex = current - data.sections.length;
+  const isQuiz = quizIndex >= 0;
+  const copy = slideCopy[language][Math.min(current, data.sections.length - 1)];
+  const section = data.sections[Math.min(current, data.sections.length - 1)];
+  const question = isQuiz ? data.quiz[quizIndex] : null;
 
   const leave = useCallback(() => {
     if (document.fullscreenElement) void document.exitFullscreen().catch(() => {});
     useSystemStore.getState().setLessonPresenting(false);
   }, []);
-
-  const complete = useCallback(() => {
-    useSystemStore.getState().setLessonComplete(true);
-    leave();
-  }, [leave]);
-
   const goTo = useCallback((next: number) => {
-    const state = useSystemStore.getState();
-    setDirection(next < state.lessonIndex ? 'backward' : 'forward');
-    state.setLessonIndex(Math.max(0, Math.min(lessonScenes.length - 1, next)));
-    state.setLessonComplete(next >= lessonScenes.length - 1);
+    useSystemStore.getState().setLessonIndex(Math.max(0, Math.min(total - 1, next)));
+    setFinished(false);
+    stage.current?.scrollTo({ top: 0 });
+    requestAnimationFrame(() => stage.current?.focus({ preventScroll: true }));
+  }, [total]);
+  const finish = useCallback(() => {
+    useSystemStore.getState().setLessonComplete(true);
+    setFinished(true);
+    stage.current?.scrollTo({ top: 0 });
   }, []);
 
   useEffect(() => {
-    rootRef.current?.focus();
-    let ownsFullscreen = document.fullscreenElement === rootRef.current;
-    function onFullscreenChange() {
-      const isFullscreen = document.fullscreenElement === rootRef.current;
-      const exitedLessonFullscreen = ownsFullscreen && !isFullscreen;
-      ownsFullscreen = isFullscreen;
-      if (!exitedLessonFullscreen) return;
-      // Browsers can consume Escape before delivering a keydown to the page.
-      // Only the explicit fullscreen toggle keeps the presentation open.
-      if (!keepLessonOnFullscreenExit.current) useSystemStore.getState().setLessonPresenting(false);
-      keepLessonOnFullscreenExit.current = false;
-    }
-    function onKeyDown(event: KeyboardEvent) {
-      const target = event.target as HTMLElement;
-      if (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return;
-      if (chapterDialog.current?.open) return;
-      const state = useSystemStore.getState();
-      if ((event.ctrlKey || event.metaKey) && event.shiftKey && event.key.toLowerCase() === 'r') {
-        event.preventDefault();
-        setReset(value => value + 1);
-      } else if (event.key === 'Escape') {
-        event.preventDefault();
-        leave();
-      } else if (event.key === 'ArrowRight' || (event.code === 'Space' && target.tagName !== 'BUTTON')) {
-        event.preventDefault();
-        if (state.lessonIndex >= lessonScenes.length - 1) complete();
-        else goTo(state.lessonIndex + 1);
-      } else if (event.key === 'ArrowLeft') {
-        event.preventDefault();
-        goTo(state.lessonIndex - 1);
-      } else if (event.key.toLowerCase() === 'm') {
-        state.setMuted(!state.muted);
-      } else if (event.key.toLowerCase() === 'p') {
-        state.setMotionPaused(!state.motionPaused);
-      }
-    }
-    window.addEventListener('keydown', onKeyDown);
-    document.addEventListener('fullscreenchange', onFullscreenChange);
-    return () => {
-      window.removeEventListener('keydown', onKeyDown);
-      document.removeEventListener('fullscreenchange', onFullscreenChange);
+    root.current?.focus();
+    let ownedFullscreen = document.fullscreenElement === root.current;
+    const onFullscreen = () => {
+      const owns = document.fullscreenElement === root.current;
+      if (ownedFullscreen && !owns && !fullscreenToggle.current) leave();
+      ownedFullscreen = owns;
+      fullscreenToggle.current = false;
     };
-  }, [complete, goTo, leave]);
+    const onKey = (event: KeyboardEvent) => {
+      if (event.defaultPrevented || dialog.current?.open) return;
+      const target = event.target as HTMLElement;
+      if (target.closest('input, textarea, select, [contenteditable="true"], [role="tablist"], [role="slider"]')) return;
+      if (event.key === 'Escape') { event.preventDefault(); leave(); }
+      else if (event.altKey || event.ctrlKey || event.metaKey) return;
+      else if (event.key === 'ArrowRight' || (event.code === 'Space' && !target.closest('button, a, summary'))) {
+        event.preventDefault();
+        const position = useSystemStore.getState().lessonIndex;
+        if (position < total - 1) goTo(position + 1); else finish();
+      } else if (event.key === 'ArrowLeft') { event.preventDefault(); goTo(useSystemStore.getState().lessonIndex - 1); }
+      else if (event.key.toLowerCase() === 'r') { event.preventDefault(); setReading(value => !value); }
+    };
+    window.addEventListener('keydown', onKey);
+    document.addEventListener('fullscreenchange', onFullscreen);
+    return () => { window.removeEventListener('keydown', onKey); document.removeEventListener('fullscreenchange', onFullscreen); };
+  }, [finish, goTo, leave, total]);
 
-  function toggleOverview() {
-    if (chapterDialog.current?.open) chapterDialog.current.close();
-    else chapterDialog.current?.showModal();
-    setOverview(Boolean(chapterDialog.current?.open));
-  }
-
-  function selectChapter(number: string) {
-    goTo(lessonScenes.findIndex(item => item.chapter === number));
-    chapterDialog.current?.close();
-    setOverview(false);
-  }
-
-  async function fullscreen() {
+  function openModal(value: 'contents' | 'sources') { setModal(value); dialog.current?.showModal(); }
+  function closeModal() { dialog.current?.close(); setModal(null); }
+  function jump(next: number) { closeModal(); goTo(next); }
+  async function toggleFullscreen() {
     try {
-      if (document.fullscreenElement) {
-        keepLessonOnFullscreenExit.current = document.fullscreenElement === rootRef.current;
-        await document.exitFullscreen();
-      }
-      else await rootRef.current?.requestFullscreen();
-    } catch {
-      keepLessonOnFullscreenExit.current = false;
-      useSystemStore.getState().notify('Presentation view', 'Your browser is already showing the full lesson. Browser fullscreen is unavailable.');
-    }
+      if (document.fullscreenElement) { fullscreenToggle.current = true; await document.exitFullscreen(); }
+      else await root.current?.requestFullscreen();
+    } catch { fullscreenToggle.current = false; setNotice(t.unavailable); }
+  }
+  function demo(app: AppId) { useSystemStore.getState().openApp(app); leave(); }
+  function restart() {
+    setRevealed([]); setReset(value => value + 1);
+    useSystemStore.getState().setLessonComplete(false); goTo(0);
   }
 
-  return <div ref={rootRef} tabIndex={-1} className={`lw-engine ${reducedMotion || systemReducedMotion ? 'lw-reduced-motion' : ''} ${motionPaused ? 'lw-motion-paused' : ''}`} data-scene-type={scene.type} aria-label="Operating systems interactive lesson">
-    <LessonWorld />
-    <header className="lw-header"><button className="lw-wordmark" onClick={leave} aria-label="Return to opitlcalOS desktop"><svg width="22" height="20" viewBox="0 0 22 20" fill="none" aria-hidden="true"><circle cx="11" cy="10" r="8" stroke="currentColor" strokeWidth="1.5" /><circle cx="11" cy="10" r="3" fill="currentColor" /></svg><span>opitlcalOS <b>/</b> LESSON</span></button><div className="lw-chapter-meta"><span>{scene.chapter}</span><span>{chapter?.title}</span></div><button className="lw-icon-button" onClick={leave} aria-label="Exit lesson to desktop (Escape)" title="Return to desktop · Esc"><X size={21} /></button></header>
-    <div className={`lw-scene-layer lw-direction-${direction}`} key={`${scene.id}-${reset}`} tabIndex={0} role="group" aria-label="Current lesson scene"><SceneRenderer scene={scene} onComplete={complete} /></div>
-    <footer className="lw-footer"><div className="lw-footer-left"><button className={`lw-icon-button ${overview ? 'is-active' : ''}`} onClick={toggleOverview} aria-label="Open chapter overview" title="Chapters"><Grid2X2 size={18} /></button><span className="lw-footer-caption">{scene.type === 'demoBridge' ? 'LEARN BY DOING' : 'BENEATH THE SURFACE'}</span></div><div className="lw-navigation"><button onClick={() => goTo(safeIndex - 1)} disabled={safeIndex === 0} aria-label="Previous scene"><ArrowLeft size={20} /></button><span aria-live="polite"><strong>{String(safeIndex + 1).padStart(2, '0')}</strong><i>/</i>{String(lessonScenes.length).padStart(2, '0')}</span><button onClick={() => safeIndex === lessonScenes.length - 1 ? complete() : goTo(safeIndex + 1)} aria-label={safeIndex === lessonScenes.length - 1 ? 'Finish lesson and return to desktop' : 'Next scene'}><ArrowRight size={20} /></button></div><div className="lw-footer-right"><button className="lw-icon-button lw-reset-button" onClick={() => setReset(value => value + 1)} aria-label="Reset current scene" title="Reset scene · Ctrl/⌘ Shift R"><RotateCcw size={16} /></button><button className="lw-icon-button" onClick={() => useSystemStore.getState().setMotionPaused(!motionPaused)} aria-label={motionPaused ? 'Resume motion (P)' : 'Pause motion (P)'} title={motionPaused ? 'Resume motion · P' : 'Pause motion · P'} aria-pressed={motionPaused}>{motionPaused ? <Play size={17} /> : <Pause size={17} />}</button><button className="lw-icon-button" onClick={() => useSystemStore.getState().setMuted(!muted)} aria-label={muted ? 'Unmute (M)' : 'Mute (M)'} title={muted ? 'Unmute · M' : 'Mute · M'} aria-pressed={muted}>{muted ? <VolumeX size={18} /> : <Volume2 size={18} />}</button><button className="lw-icon-button lw-fullscreen-button" onClick={fullscreen} aria-label="Toggle browser fullscreen" title="Toggle fullscreen"><Expand size={17} /></button></div></footer>
-    <div className="lw-progress" aria-hidden="true"><span style={{ transform: `scaleX(${(safeIndex + 1) / lessonScenes.length})` }} /></div>
-    <dialog ref={chapterDialog} className="lw-chapter-dialog" onClose={() => setOverview(false)}><div className="lw-dialog-heading"><h2>Your journey</h2><button className="lw-icon-button" onClick={toggleOverview} aria-label="Close chapter overview"><X size={20} /></button></div><div className="lw-chapter-list">{lessonChapters.map(item => <button key={item.number} className={scene.chapter === item.number ? 'is-current' : ''} onClick={() => selectChapter(item.number)}><span>{item.number}</span>{item.title}<ArrowRight size={16} /></button>)}</div><p>← → Navigate · Esc Desktop · P Pause motion · M Mute</p></dialog>
+  return <div ref={root} tabIndex={-1} lang={language} className="p-engine" data-reading={reading} data-reduced={!!systemReduced || reducedMotion} data-chapter={isQuiz ? 'quiz' : current + 1} aria-label={t.learn}>
+    <header className="p-header">
+      <button className="p-brand" onClick={leave} aria-label={t.exit}><span className="p-brand-symbol" aria-hidden="true">o.</span><span>opitlcal<span className="p-brand-os">OS</span><small>{t.lesson}</small></span></button>
+      <div className="p-header-right"><LanguageToggle /><button className="p-icon-button" onClick={leave} aria-label={t.exit} title={t.exit}><X size={21} /></button></div>
+    </header>
+    <div className="p-toolbar">
+      <button className="p-text-button" onClick={() => openModal('contents')}><List size={17} />{t.chapters}<span className="p-small-count">17</span></button>
+      <div className="p-view-switch" role="group" aria-label={language === 'en' ? 'Reading view' : 'Харах горим'}><button aria-pressed={!reading} onClick={() => setReading(false)}><Monitor size={15} />{t.slides}</button><button aria-pressed={reading} onClick={() => setReading(true)}><BookOpen size={15} />{t.read}</button></div>
+      <button className="p-icon-button p-fullscreen" onClick={toggleFullscreen} aria-label={t.fullscreen} title={t.fullscreen}><Expand size={17} /></button>
+    </div>
+    <div className="p-body" ref={stage} tabIndex={-1}>
+      <div className="p-slide" key={`${current}-${reset}`}>
+        {finished ? <section className="p-finished"><span className="p-kicker"><Check size={16} />{t.complete}</span><h1>{t.done}</h1><p>{t.learn}</p><div className="p-finish-meter">{revealed.length}<span>/ 8</span><small>{t.checked}</small></div><div className="p-finish-actions"><button className="p-solid-button" onClick={leave}>{t.explore}<ArrowRight size={19} /></button><button className="p-text-button" onClick={restart}><RotateCcw size={17} />{t.again}</button></div></section> : isQuiz && question ? <section className="p-quiz"><div className="p-quiz-marker"><span>{t.think}</span><strong>{String(quizIndex + 1).padStart(2, '0')}<small>/08</small></strong></div><div className="p-quiz-main"><span className="p-kicker">{t.quiz}</span><h1>{question.question}</h1><p className="p-quiz-instruction">{t.note}</p><button className="p-solid-button" aria-expanded={revealed.includes(quizIndex)} aria-controls="quiz-answer" onClick={() => setRevealed(values => values.includes(quizIndex) ? values.filter(i => i !== quizIndex) : [...values, quizIndex])}>{revealed.includes(quizIndex) ? t.hide : t.show}<ArrowRight size={18} /></button><div id="quiz-answer" className="p-quiz-answer" hidden={!revealed.includes(quizIndex)}><span className="p-kicker">{t.answer}</span><p>{question.answer}</p></div></div></section> : <>
+          <section className={`p-composition p-composition-${current + 1}`}>
+            <div className="p-slide-copy"><span className="p-kicker"><span className="p-chapter-number">{String(current + 1).padStart(2, '0')}</span>{copy.eyebrow}</span><h1>{copy.title}</h1><p className="p-summary">{copy.summary}</p><div className="p-takeaway"><span>{t.important}</span><p>{copy.takeaway}</p></div></div>
+            <div className="p-illustration"><ChapterVisual chapter={current + 1} language={language} onDemo={demo} /></div>
+          </section>
+          <div className="p-slide-baseline"><span>{section.title}</span><button className="p-text-button" onClick={() => setReset(value => value + 1)}><RotateCcw size={13} />{t.reset}</button></div>
+        </>}
+      </div>
+      {reading && !finished && <aside key={current} className="p-reading" aria-label={t.reading}>
+        <div className="p-reading-heading"><BookOpen size={18} /><span>{t.reading}</span><small>{isQuiz ? t.question : t.chapter} {isQuiz ? quizIndex + 1 : current + 1}</small></div>
+        {isQuiz && question ? <><h2>{question.question}</h2><details className="p-reading-check"><summary>{t.show}</summary><p>{question.answer}</p></details></> : <><h2>{section.title}</h2><Manuscript text={section.markdown} answerLabel={t.show} /></>}
+      </aside>}
+    </div>
+    <footer className="p-footer"><div className="p-footer-meta"><button className="p-source-button" onClick={() => openModal('sources')}>{language === 'en' ? 'Sources & notes' : 'Эх сурвалж'}<span aria-hidden="true">↗</span></button><span className="p-key-hint">{t.key}</span></div><nav className="p-navigation" aria-label={language === 'en' ? 'Presentation navigation' : 'Илтгэлийн удирдлага'}><button className="p-back-button" disabled={current === 0 && !finished} aria-label={t.back} onClick={() => goTo(finished ? total - 1 : current - 1)}><ArrowLeft size={20} /></button><span className="p-page-count"><b>{String(current + 1).padStart(2, '0')}</b><span>/ {total}</span></span><button className="p-next-button" onClick={() => finished ? leave() : current === total - 1 ? finish() : goTo(current + 1)}>{finished ? t.explore : current === total - 1 ? t.finish : current === data.sections.length - 1 ? t.startQuiz : isQuiz ? t.nextQuestion : t.next}<ArrowRight size={19} /></button></nav></footer>
+    <div className="p-progress" aria-hidden="true"><span style={{ width: `${finished ? 100 : ((current + 1) / total) * 100}%` }} /></div>
+    {notice && <div className="p-notice" role="status">{notice}<button aria-label={language === 'en' ? 'Dismiss' : 'Хаах'} onClick={() => setNotice('')}><X size={16} /></button></div>}
+    <p className="sr-only" aria-live="polite" aria-atomic="true">{isQuiz ? `${t.question} ${quizIndex + 1}: ${question?.question}` : `${t.chapter} ${current + 1}: ${section.title}`}</p>
+    <dialog ref={dialog} className={`p-dialog p-dialog-${modal ?? 'contents'}`} onClose={() => setModal(null)} onClick={event => { if (event.target === event.currentTarget) closeModal(); }} aria-labelledby="presentation-dialog-title">
+      <div className="p-dialog-inner"><header><span className="p-kicker">opitlcalOS / {modal === 'contents' ? '01—17' : 'REFERENCES'}</span><button className="p-icon-button" onClick={closeModal} aria-label={language === 'en' ? 'Close dialog' : 'Цонх хаах'}><X size={21} /></button></header><h2 id="presentation-dialog-title">{modal === 'contents' ? t.contents : t.sources}</h2>
+        {modal === 'contents' ? <><p className="p-dialog-intro">{t.contentsIntro}</p><nav className="p-contents">{data.sections.map((item, i) => <button key={item.id} aria-current={current === i ? 'step' : undefined} onClick={() => jump(i)}><span>{String(item.id).padStart(2, '0')}</span><strong>{item.title}</strong><ArrowRight size={17} /></button>)}<button className="p-quiz-link" onClick={() => jump(data.sections.length)}><span>?</span><strong>{t.startQuiz}</strong><small>8</small></button></nav></> : <><p className="p-dialog-intro">{t.verified}</p><h3>{t.about}</h3><Manuscript text={data.intro} answerLabel={t.show} /><Manuscript text={data.notes} answerLabel={t.show} /></>}
+      </div>
+    </dialog>
   </div>;
 }

@@ -1,25 +1,28 @@
 'use client';
 
-import { useState } from 'react';
-import { ArrowRight, BookOpen, Check, ExternalLink, Play, RotateCcw } from 'lucide-react';
-import { lessonChapters, lessonScenes, lessonSources } from '@/lib/lesson-data';
+import { ArrowRight, BookOpen, RotateCcw } from 'lucide-react';
+import { manuscript } from '@/lib/presentation-data';
+import { usePresentationLanguage } from '@/lib/presentation-language';
 import { useSystemStore } from '@/store/system';
-import { Diamond } from '@/components/lesson/LessonWorld';
-import '@/components/lesson/lesson.css';
+import LanguageToggle from '@/components/lesson/LanguageToggle';
+import Manuscript from '@/components/lesson/Manuscript';
+import '@/components/lesson/presentation.css';
 
 export default function LessonApp() {
-  const index = useSystemStore(state => state.lessonIndex);
-  const complete = useSystemStore(state => state.lessonComplete);
-  const [tab, setTab] = useState<'lesson' | 'sources'>('lesson');
-
-  function begin(restart = false, sceneIndex?: number) {
+  const [language] = usePresentationLanguage();
+  const index = useSystemStore(s => s.lessonIndex);
+  const complete = useSystemStore(s => s.lessonComplete);
+  const mn = language === 'mn';
+  const data = manuscript[language];
+  function begin(next = index) {
     const state = useSystemStore.getState();
-    if (restart || typeof sceneIndex === 'number') {
-      state.setLessonIndex(sceneIndex ?? 0);
-      state.setLessonComplete(false);
-    }
-    state.setLessonPresenting(true);
+    state.setLessonIndex(next); state.setLessonComplete(false); state.setLessonPresenting(true);
   }
-
-  return <div className="la-app"><nav className="la-tabs" aria-label="Lesson sections"><button onClick={() => setTab('lesson')} className={tab === 'lesson' ? 'is-active' : ''}><BookOpen size={15} />Lesson</button><button onClick={() => setTab('sources')} className={tab === 'sources' ? 'is-active' : ''}>Sources & notes</button></nav>{tab === 'lesson' ? <div className="la-content"><div className="la-cover"><Diamond className="la-cover-diamond" /><span className="la-cover-serial">opitlcalOS EDUCATION / 001</span><h2>Operating<br />systems.</h2><p>A journey beneath the surface.</p><div className="la-cover-footer"><span>14 CHAPTERS</span><span>INTERACTIVE LESSON</span></div></div><div className="la-intro">{complete ? <><h3><Check size={20} /> Lesson complete.</h3><p>Explore the desktop. Try opening an app, finding its process, and seeing what changes when you close it.</p><div className="la-actions"><button className="la-primary" onClick={() => { const state = useSystemStore.getState(); const lessonWindow = state.windows.find(window => window.appId === 'lesson'); if (lessonWindow) state.minimizeWindow(lessonWindow.id); }}>Explore the desktop <ArrowRight size={16} /></button><button className="la-secondary" onClick={() => begin(true)}><RotateCcw size={15} />Restart</button></div></> : <><h3>The interface is just the beginning.</h3><p>Meet the software that coordinates processes, memory, files, and devices—and try it for yourself.</p><div className="la-actions"><button className="la-primary" onClick={() => begin()}><Play size={15} fill="currentColor" />{index > 0 ? 'Resume lesson' : 'Begin the journey'}<ArrowRight size={17} /></button>{index > 0 && <button className="la-secondary" onClick={() => begin(true)}><RotateCcw size={15} />Restart</button>}</div>{index > 0 && <small className="la-resume-note">Continue at scene {index + 1}: {lessonScenes[Math.min(index, lessonScenes.length - 1)].title.replaceAll('\n', ' ').toLowerCase()}</small>}</>}<div className="la-controls-note"><span><kbd>←</kbd><kbd>→</kbd> Change scene</span><span><kbd>Esc</kbd> Return here</span></div></div><div className="la-outline"><h3>Your journey</h3>{lessonChapters.map(chapter => <button key={chapter.number} onClick={() => begin(false, lessonScenes.findIndex(scene => scene.chapter === chapter.number))}><span>{chapter.number}</span>{chapter.title}<ArrowRight size={15} /></button>)}</div></div> : <div className="la-sources"><h2>Built to make the invisible understandable.</h2><p>opitlcalOS is a fictional educational environment running in your browser. Its filesystem, processes, resource measurements, and terminal are simulations.</p><h3>Where the lesson comes from</h3><dl><div><dt>Topic outline</dt><dd>The supplied design brief lists OS purpose, applications/shell/kernel, resource management, interfaces, and OS families as the teacher’s expected topics. No teacher PDF was supplied or quoted.</dd></div><div><dt>Technical clarification</dt><dd>The kernel/user-space boundary, CPU scheduling, MMU translation, page faults, and Linux/distribution/desktop distinctions modernize that outline using the references below.</dd></div><div><dt>Added for teaching</dt><dd>The desktop, hands-on process demos, simplified address mappings, round-robin scheduler, fault exercise, and knowledge check are original teaching examples.</dd></div></dl><h3>Read further</h3><div className="la-source-links">{lessonSources.map(source => <a href={source.href} target="_blank" rel="noreferrer" key={source.href}><strong>{source.title}<ExternalLink size={14} /></strong><span>{source.detail}</span></a>)}</div><h3>Visual references</h3><p>The workstation models, baked textures, and camera approach are adapted from <a href="https://github.com/henryjeff/portfolio-website" target="_blank" rel="noreferrer">Henry Heffernan’s portfolio</a> under its MIT license. See <a href="/licenses.txt" target="_blank" rel="noreferrer">asset credits and licenses</a>. The lesson’s geometric motion language takes inspiration from the ending of <a href="https://www.youtube.com/watch?v=8dCGzs2vwftH" target="_blank" rel="noreferrer">Sonic Wave Infinity</a>. All lesson geometry is original; no Geometry Dash art or soundtrack is included.</p><h3>Presenter controls</h3><p>Arrow keys or Space move through scenes. Escape returns to the desktop. P pauses ambient motion; M toggles sound. Ctrl/⌘ + Shift + R resets the current interactive scene. Reduced motion is available in Settings and respects your device preference.</p></div>}</div>;
+  return <div className="p-launch" lang={language}>
+    <header className="p-launch-top"><span className="p-launch-mark">opitlcalOS / FIELD NOTES 001</span><LanguageToggle /></header>
+    <div className="p-launch-hero"><div><h2>{mn ? 'Чиний компьютер.\nЧиний сонголт.' : 'Your computer.\nYour choices.'}</h2><p className="p-launch-intro">{mn ? 'Нэг цэнхэр муурын зургийг дагаж үйлдлийн систем, Linux, Fedora болон мэдээллийнхээ нууцлалыг ойлгоё.' : 'Follow one blue cat through operating systems, Linux, Fedora, and the information you share.'}</p><div className="p-launch-actions"><button className="p-solid-button" onClick={() => begin(complete ? 0 : index)}><BookOpen size={17} />{complete ? (mn ? 'Дахин эхлэх' : 'Start again') : index > 0 ? (mn ? 'Үргэлжлүүлэх' : 'Continue reading') : (mn ? 'Илтгэл эхлүүлэх' : 'Start presentation')}<ArrowRight size={18} /></button>{index > 0 && !complete && <button className="p-text-button" onClick={() => begin(0)}><RotateCcw size={16} />{mn ? 'Эхнээс нь' : 'From the start'}</button>}</div><div className="p-launch-counts"><span>{mn ? '17 ХЭСЭГ' : '17 CHAPTERS'}</span><span>{mn ? '8 АСУУЛТ' : '8 QUESTIONS'}</span><span>EN / МН</span></div>{index > 0 && !complete && <p className="p-launch-resume">{mn ? 'Үргэлжлүүлэх хуудас' : 'Your place'} · {index + 1} / 25</p>}</div><div className="p-launch-cat" aria-hidden="true"><svg viewBox="0 0 240 245" fill="none"><path d="M36 106V31l57 43a94 94 0 0 1 54 0l57-43v75c15 15 22 31 22 54 0 47-47 77-106 77S14 207 14 160c0-23 7-39 22-54Z" fill="currentColor"/><path d="M65 148h16m78 0h16m-68 24h26m-13 0v16m0 0-13 9m13-9 13 9" stroke="#f2f1e8" strokeWidth="7" strokeLinecap="round"/><path d="m12 162 40 8m-44 8 42 3m178-19-40 8m44 8-42 3" stroke="currentColor" strokeWidth="5"/></svg></div></div>
+    <nav className="p-launch-outline" aria-label={mn ? 'Хичээлийн хэсгүүд' : 'Lesson chapters'}>{data.sections.map((section,i) => <button key={section.id} onClick={() => begin(i)}><span>{String(section.id).padStart(2,'0')}</span>{section.title}<ArrowRight size={14} /></button>)}<button onClick={() => begin(17)}><span>?</span>{mn ? 'Сурснаа шалгаарай' : 'Check what you learned'}<ArrowRight size={14} /></button></nav>
+    <details className="p-launch-info"><summary>{mn ? 'Хэрхэн суралцах вэ?' : 'How to use this lesson'}</summary><Manuscript text={data.intro} /></details>
+    <details className="p-launch-info"><summary>{mn ? 'Эх сурвалж ба тайлбар' : 'Sources & teaching notes'}</summary><Manuscript text={data.notes} /></details>
+  </div>;
 }
