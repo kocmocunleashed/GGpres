@@ -11,7 +11,7 @@ bun install
 bun dev
 ```
 
-Open [localhost:3000](http://localhost:3000) to see the original desk, coffee mug, plant, and computer. Click the computer to enter its desktop, then open Operating Systems. The older `/presentation` link opens the same desk. For a classroom presentation, use a production build:
+Open [localhost:3000](http://localhost:3000), wait for the workstation to load, then press **START** for the original opening animation. Click the computer to enter its desktop, then open Operating Systems. The older `/presentation` link opens the same start screen. For a classroom presentation, use a production build:
 
 ```bash
 bun run build
@@ -33,7 +33,7 @@ The narration starts with familiar actions, explains each technical term, and of
 
 ## Explore the workstation
 
-- The full desk is the opening view. Click the computer screen or case, or use **Click the computer to enter**, to enter the live GNOME-style desktop.
+- The original loading screen and **START** button lead into the workstation opening. Click to move closer, then click the computer screen or case, or use **Click the computer to enter**, to enter the live GNOME-style desktop.
 - Hovering leaves the camera where it is. Choose **Back to desk** or press `Esc` to return to the physical workstation.
 - Use **Free camera** to orbit the workstation; drag to look around and scroll to zoom.
 - Choose **Explore the desk** to pick up the mug, read the note, swivel the chair, or press the PC power button. The objects themselves are clickable; matching controls support keyboard and touch.
@@ -98,7 +98,7 @@ Next.js App Router, React, TypeScript, Zustand, React Three Fiber, Three.js, and
 
 ## Accessibility and reliability
 
-System `prefers-reduced-motion` is respected; manual reduction is available in Settings. The presentation uses DOM text and controls, with scrollable narration and native answer disclosures. Sound starts muted and is synthesized without copyrighted recordings. WebGL failure falls back to the working desktop. The desktop adapts to narrow viewports; the lesson allows scrolling when content cannot fit. Laptop and projector viewports remain the primary presentation target.
+System `prefers-reduced-motion` is respected; manual reduction is available on the start screen and in Settings. The presentation uses DOM text and controls, with scrollable narration and native answer disclosures. Sound starts muted and is synthesized without copyrighted recordings. WebGL failure falls back to the working desktop. The desktop adapts to narrow viewports; the lesson allows scrolling when content cannot fit. Laptop and projector viewports remain the primary presentation target.
 
 ## Checks
 

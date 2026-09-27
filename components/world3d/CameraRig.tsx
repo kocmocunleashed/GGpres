@@ -26,15 +26,15 @@ function monitorEase(t: number) {
   return 3 * (1 - u) ** 2 * u * 0.99 + 3 * (1 - u) * u ** 2 + u ** 3;
 }
 
-export default function CameraRig({ view, reducedMotion, motionPaused, expanded, interactionLocked = false }: {
-  view: WorkstationView; reducedMotion: boolean; motionPaused: boolean; expanded: boolean; interactionLocked?: boolean;
+export default function CameraRig({ view, reducedMotion, motionPaused, expanded, onIntroComplete, interactionLocked = false }: {
+  view: WorkstationView; reducedMotion: boolean; motionPaused: boolean; expanded: boolean; onIntroComplete: () => void; interactionLocked?: boolean;
 }) {
   const { size } = useThree();
   const controls = useRef<OrbitControlsInstance>(null);
   const activeView = useRef<WorkstationView>("loading");
   const freeCameraReady = useRef(false);
   const elapsed = useRef(0);
-  const transition = useRef({ time: 0, duration: 0, ease: exponentialOut });
+  const transition = useRef({ time: 0, duration: 0, ease: exponentialOut, intro: false });
   const from = useRef(initialPosition.clone());
   const fromTarget = useRef(initialTarget.clone());
   const target = useRef(initialTarget.clone());
@@ -89,7 +89,7 @@ export default function CameraRig({ view, reducedMotion, motionPaused, expanded,
       fromTarget.current.copy(target.current);
       const duration = reducedMotion || motionPaused || previous === "loading" && view === "room" ? 0 : previous === "loading" && view === "overview" ? 2.5 : view === "monitor" ? 2 : view === "orbit" ? 0.75 : previous === "orbit" && view === "overview" ? 4 : 1;
       const ease = view === "monitor" || view === "orbit" ? monitorEase : previous === "loading" || previous === "orbit" && view === "overview" ? exponentialOut : quinticInOut;
-      transition.current = { time: 0, duration, ease };
+      transition.current = { time: 0, duration, ease, intro: previous === "loading" && view === "overview" };
       if (controls.current) controls.current.enabled = false;
     }
 
@@ -123,6 +123,10 @@ export default function CameraRig({ view, reducedMotion, motionPaused, expanded,
     }
     camera.lookAt(target.current);
     camera.updateMatrixWorld();
+    if (movement.intro && (movement.time >= movement.duration || reducedMotion || motionPaused)) {
+      movement.intro = false;
+      onIntroComplete();
+    }
   });
 
   return <OrbitControls ref={controls} enabled={false} enablePan={false} enableDamping={!reducedMotion && !motionPaused} dampingFactor={0.05} maxPolarAngle={Math.PI / 2} minDistance={4000 * UNIT} maxDistance={Math.max(29000 * UNIT, 35 * size.height / size.width)} />;
